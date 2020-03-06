@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.421
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaboGame_test_2", "BaboGame_test_2\BaboGame_test_2.csproj", "{65A4B36D-92AB-420B-B2EE-BE333F26BFB7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{65A4B36D-92AB-420B-B2EE-BE333F26BFB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65A4B36D-92AB-420B-B2EE-BE333F26BFB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65A4B36D-92AB-420B-B2EE-BE333F26BFB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65A4B36D-92AB-420B-B2EE-BE333F26BFB7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {103A18E7-27CC-4BF6-AEA8-ADB560ED1F60}
+	EndGlobalSection
+EndGlobal
