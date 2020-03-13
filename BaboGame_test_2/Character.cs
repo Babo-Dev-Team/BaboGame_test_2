@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework;
 public class Character
 {
     private Texture2D _CharTexture;
-    public Vector2D _CharPosition;
+    public Vector2 _CharPosition;
 
 	public Character(Texture2D _texture)
 	{
