@@ -11,14 +11,11 @@ namespace BaboGame_test_2
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
- 
-        private float pointerScale;
-        private Vector2 pointerOrigin;
-        private Texture2D pointerTexture;//Albert
-        private Vector2 pointerPosition;//Albert2
-        private Texture2D characterTexture;
-        private Vector2 characterPosition;//Albert2
 
+        
+        private Texture2D _texture;//Albert1
+        private Vector2 _position;//Albert2
+        
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -36,7 +33,6 @@ namespace BaboGame_test_2
             // TODO: Add your initialization logic here
 
             base.Initialize();
-            pointerScale = 0.1f; // scale factor for the pointer
         }
 
         /// <summary>
@@ -49,12 +45,9 @@ namespace BaboGame_test_2
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            // origin point in the center of the object 
-            pointerTexture = Content.Load<Texture2D>("Babo down0 s0");//Albert3  
-            pointerOrigin = new Vector2(pointerTexture.Width / 2, pointerTexture.Height / 2);
-            pointerPosition = new Vector2(0, 0);//Albert4
-            characterTexture = Content.Load<Texture2D>("Babo down0 s0");
-            characterPosition = new Vector2(0, 0);//Albert4
+            
+            _texture = Content.Load<Texture2D>("Babo down0 s0");//Albert3
+            _position = new Vector2(0, 0);//Albert4
         }
 
         /// <summary>
@@ -73,33 +66,33 @@ namespace BaboGame_test_2
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+           /* if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+                Exit();
+
+             if (Keyboard.GetState().IsKeyDown(Keys.W)) //Albert8
+            {
+                _position.Y -= 3;
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.S)) //Albert9
+            {
+                _position.Y += 3;
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.A)) //Albert10
+            {
+                _position.X -= 3;
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.D)) //Albert11
+            {
+                _position.X += 3;
+            }
+            */
+            _position = new Vector2 (Mouse.GetState().Position.X - _texture.Width/2,Mouse.GetState().Position.Y - _texture.Height/2); //Aquí s'haurà de posar el cursor en lloc del Babo
+
             // TODO: Add your update logic here
 
-            /* if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                 Exit();
-                 */
-            if (Keyboard.GetState().IsKeyDown(Keys.W)) //Albert8
-             {
-                 characterPosition.Y -= 3;
-             }
-
-             if (Keyboard.GetState().IsKeyDown(Keys.S)) //Albert9
-             {
-                 characterPosition.Y += 3;
-             }
-
-             if (Keyboard.GetState().IsKeyDown(Keys.A)) //Albert10
-             {
-                 characterPosition.X -= 3;
-             }
-
-             if (Keyboard.GetState().IsKeyDown(Keys.D)) //Albert11
-             {
-                 characterPosition.X += 3;
-             }
-
-            pointerPosition = new Vector2 (Mouse.GetState().Position.X,
-                                    Mouse.GetState().Position.Y); 
             base.Update(gameTime);
         }
 
@@ -112,15 +105,9 @@ namespace BaboGame_test_2
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            spriteBatch.Begin();
-
-            // draws the pointer at position with scale pointerScale applied from pointerOrigin
-            spriteBatch.Draw(pointerTexture, pointerPosition, null, Color.White, 0.0f,
-            pointerOrigin, pointerScale, SpriteEffects.None, 0);
-
-            //spriteBatch.Draw(_pointerTexture, _pointerPosition);
-            spriteBatch.Draw(characterTexture, characterPosition);
-            spriteBatch.End();
+            spriteBatch.Begin();//Albert5
+            spriteBatch.Draw(_texture,_position);//Albert6
+            spriteBatch.End();//Albert7
 
             base.Draw(gameTime);
         }
