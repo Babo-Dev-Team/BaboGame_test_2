@@ -93,6 +93,7 @@ namespace BaboGame_test_2
             base.Update(gameTime);
         }
 
+        //Funció per definir la mort dels objectes
         private void PostUpdate()
         {
              for (int i=0; i < _sprites.Count; i++)
@@ -114,11 +115,12 @@ namespace BaboGame_test_2
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            spriteBatch.Begin();//Albert5
+            spriteBatch.Begin();
+
             foreach (var sprite in _sprites)
                 sprite.Draw(spriteBatch);
 
-            spriteBatch.End();//Albert7
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
