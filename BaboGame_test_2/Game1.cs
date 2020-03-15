@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace BaboGame_test_2
 {
@@ -12,10 +13,7 @@ namespace BaboGame_test_2
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        public Character character;
-        
-        private Texture2D _texture;//Albert1
-        private Vector2 _position;//Albert2
+        private List<Sprite> _sprites;
         
         public Game1()
         {
@@ -46,19 +44,25 @@ namespace BaboGame_test_2
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            
-            _texture = Content.Load<Texture2D>("Babo down0 s0");//Albert3
-            _position = new Vector2(0, 0);//Albert4
 
-            character = new Character(_texture)
+            var slugTexture = Content.Load<Texture2D>("Babo down0 s0");
+            var sightTexture = Content.Load<Texture2D>("Sight_off");
+
+            _sprites = new List<Sprite>()
             {
-                _CharPosition = new Vector2(0,0),
-                _CharOrigin = new Vector2(0,0),
-                CharSpeed = 6f,
-                CharLayer = 0f,
+                new Character(slugTexture)
+                {
+                    Position = new Vector2(100,100),
+                    Salt = new SaltWeapon(Content.Load<Texture2D>("Babo down hit")),
+                    Scale = 0.25f,
+                },
+
+                new SightWeapon(sightTexture)
+                {
+                    Position = new Vector2(100,100),
+                    Scale = 0.2f,
+                },
             };
-
-
         }
 
         /// <summary>
@@ -80,13 +84,25 @@ namespace BaboGame_test_2
            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                Exit();
 
-             
-            _position = new Vector2 (Mouse.GetState().Position.X - _texture.Width/2,Mouse.GetState().Position.Y - _texture.Height/2); //Aquí s'haurà de posar el cursor en lloc del Babo
-            
-            character.Update();
             // TODO: Add your update logic here
+            foreach (var sprite in _sprites.ToArray())
+                sprite.Update(gameTime, _sprites);
+
+            PostUpdate();
 
             base.Update(gameTime);
+        }
+
+        private void PostUpdate()
+        {
+             for (int i=0; i < _sprites.Count; i++)
+            {
+                if (_sprites[i].IsRemoved)
+                {
+                    _sprites.RemoveAt(i);
+                    i--;
+                }
+            }
         }
 
         /// <summary>
@@ -99,8 +115,9 @@ namespace BaboGame_test_2
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();//Albert5
-            spriteBatch.Draw(_texture,_position);//Albert6
-            character.Draw(spriteBatch);
+            foreach (var sprite in _sprites)
+                sprite.Draw(spriteBatch);
+
             spriteBatch.End();//Albert7
 
             base.Draw(gameTime);
