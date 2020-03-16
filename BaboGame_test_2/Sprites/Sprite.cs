@@ -18,25 +18,29 @@ using Microsoft.Xna.Framework;
     {
         //Variables globals d'un "Sprite"
         protected Texture2D _texture;
-        protected float _rotation;
+        public float Scale = 1f;
+        public float Layer = 0f;
+        public SpriteEffects Effect = SpriteEffects.None;
+        public Color _color = Color.White;
 
-        //Variables entorn a la detecció de tecles de teclat i el ratolí
+        //Variables entorn a la detecció de tecles del teclat i el ratolí; i les seves entrades
         protected KeyboardState currentKey;
         protected KeyboardState previousKey;
         protected MouseState currentMouseState;
         protected MouseState previousMouseState;
+        public Input Input;
 
         //Variables vector per la posició, el centre i la direcció del personatge
         public Vector2 Position;
         public Vector2 Origin;
         public Vector2 Direction;
-
+        public Vector2 Velocity;
+    
         //Variables físiques del sprite
         public float RotationVelocity = 4f;
         public float LinearVelocity = 8f;
-        public float Scale = 1f;
-        public float Layer = 0f;
-        public SpriteEffects Effect = SpriteEffects.None;
+        protected float _rotation;
+        
 
         //Variable per relacionar sprites
         public Sprite Parent;
@@ -44,6 +48,10 @@ using Microsoft.Xna.Framework;
         //Variables de temps de vida i eliminació de sprites
         public float LifeSpan = 0f;
         public bool IsRemoved = false;
+
+        //Variables relacionades amb la col·lisió
+        public float HitBoxScale = 1f;
+        public bool SolidObject = true;
         
         //Funció principal per definir el sprite generat
         public Sprite(Texture2D texture)
@@ -60,7 +68,7 @@ using Microsoft.Xna.Framework;
         //Funció per dibuixar el sprite en pantalla
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_texture, Position, null, Color.White, _rotation, Origin, Scale, Effect, Layer);
+            spriteBatch.Draw(_texture, Position, null, _color, _rotation, Origin, Scale, Effect, Layer);
         }
 
         //Funció per clonar els sprites
@@ -68,5 +76,51 @@ using Microsoft.Xna.Framework;
         {
             return this.MemberwiseClone();
         }
+
+    
+
+        //Objecte que farà de "Hitbox" del sprite
+        public Rectangle Rectangle
+        {
+            get
+            {
+            return new Rectangle((int)Position.X, (int)Position.Y, (int)(_texture.Width*Scale*HitBoxScale), (int)(_texture.Height*Scale*HitBoxScale));
+            }
+        }
+
+    //Definició de col·lisió del sprite
+    #region Collision
+    protected bool IsTouchingLeft(Sprite sprite)
+    {
+        return this.Rectangle.Right + this.Velocity.X > sprite.Rectangle.Left &&
+                this.Rectangle.Left < sprite.Rectangle.Left &&
+                this.Rectangle.Bottom > sprite.Rectangle.Top &&
+                this.Rectangle.Top < sprite.Rectangle.Bottom;
     }
+
+    protected bool IsTouchingRight(Sprite sprite)
+    {
+        return this.Rectangle.Left + this.Velocity.X < sprite.Rectangle.Right &&
+                this.Rectangle.Right > sprite.Rectangle.Right &&
+                this.Rectangle.Bottom > sprite.Rectangle.Top &&
+                this.Rectangle.Top < sprite.Rectangle.Bottom;
+    }
+
+    protected bool IsTouchingTop(Sprite sprite)
+    {
+        return this.Rectangle.Bottom + this.Velocity.Y > sprite.Rectangle.Top &&
+                this.Rectangle.Top < sprite.Rectangle.Top &&
+                this.Rectangle.Right > sprite.Rectangle.Left &&
+                this.Rectangle.Left < sprite.Rectangle.Right;
+    }
+
+    protected bool IsTouchingBottom(Sprite sprite)
+    {
+        return this.Rectangle.Top + this.Velocity.Y < sprite.Rectangle.Bottom &&
+                this.Rectangle.Bottom > sprite.Rectangle.Bottom &&
+                this.Rectangle.Right > sprite.Rectangle.Left &&
+                this.Rectangle.Left < sprite.Rectangle.Right;
+    }
+    #endregion
+}
 

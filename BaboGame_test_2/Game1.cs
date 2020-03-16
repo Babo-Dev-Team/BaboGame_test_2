@@ -55,12 +55,39 @@ namespace BaboGame_test_2
                     Position = new Vector2(100,100),
                     Salt = new SaltWeapon(Content.Load<Texture2D>("Babo down hit")),
                     Scale = 0.25f,
+                    HitBoxScale = 0.6f,
+                    Input = new Input()
+                    {
+                        Left = Keys.A,
+                        Right = Keys.D,
+                        Up = Keys.W,
+                        Down = Keys.S,
+                    }
+                },
+
+                 new Character(slugTexture)
+                {
+                    Position = new Vector2(300,300),
+                    Salt = new SaltWeapon(Content.Load<Texture2D>("Babo down hit")),
+                    Scale = 0.25f,
+                    HitBoxScale = 0.6f,
+                    Input = new Input()
+                    {
+                        Left = Keys.Left,
+                        Right = Keys.Right,
+                        Up = Keys.Up,
+                        Down = Keys.Down,
+                    },
+                    Effect = SpriteEffects.FlipHorizontally,
+                    _color = Color.Silver,
                 },
 
                 new SightWeapon(sightTexture)
                 {
                     Position = new Vector2(100,100),
                     Scale = 0.2f,
+                    SolidObject = false,
+                    Layer = 1f,
                 },
             };
         }
@@ -115,7 +142,7 @@ namespace BaboGame_test_2
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            spriteBatch.Begin();
+            spriteBatch.Begin(SpriteSortMode.FrontToBack);
 
             foreach (var sprite in _sprites)
                 sprite.Draw(spriteBatch);
@@ -124,5 +151,6 @@ namespace BaboGame_test_2
 
             base.Draw(gameTime);
         }
+
     }
 }
