@@ -19,6 +19,12 @@ public class SightWeapon : Sprite
 
 	}
 
+    public SightWeapon(Dictionary<string, Animation> animations)
+           : base(animations)
+    {
+
+    }
+
     public override void Update(GameTime gameTime, List<Sprite> sprites)
     {
         //Defineix els estats del ratolí
@@ -27,5 +33,18 @@ public class SightWeapon : Sprite
 
         //Defineix la posició de la mira segons la posició del ratolí
         Position = new Vector2(Mouse.GetState().Position.X, Mouse.GetState().Position.Y);
+
+        //Crida i fa les animacions
+        SetAnimation();
+        _animationManager.Update(gameTime);
+    }
+
+    //Animació de pulsar el botó
+    protected virtual void SetAnimation()
+    {
+        if ((currentMouseState.LeftButton == ButtonState.Pressed))
+            _animationManager.Play(_animations["ON"]);
+        else
+            _animationManager.Play(_animations["OFF"]);
     }
 }

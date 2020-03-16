@@ -43,17 +43,49 @@ namespace BaboGame_test_2
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            var slugAnimations = new Dictionary<string, Animation>()
+            {
+                {"Babo down0", new Animation(Content.Load<Texture2D>("Babo/Babo down0"), 6) },
+                {"Babo up0", new Animation(Content.Load<Texture2D>("Babo/Babo up0 s0"), 1) },
+                {"Babo right0", new Animation(Content.Load<Texture2D>("Babo/Babo right0 s0"), 1) },
+                {"Babo left0", new Animation(Content.Load<Texture2D>("Babo/Babo left0 s0"), 1) },
+                {"Babo down22_5", new Animation(Content.Load<Texture2D>("Babo/Babo down22_5 s0"), 1) },
+                {"Babo up22_5", new Animation(Content.Load<Texture2D>("Babo/Babo up22_5 s0"), 1) },
+                {"Babo right22_5", new Animation(Content.Load<Texture2D>("Babo/Babo right22_5 s0"), 1) },
+                {"Babo left22_5", new Animation(Content.Load<Texture2D>("Babo/Babo left22_5 s0"), 1) },
+                {"Babo down45", new Animation(Content.Load<Texture2D>("Babo/Babo down45 s0"), 1) },
+                {"Babo up45", new Animation(Content.Load<Texture2D>("Babo/Babo up45 s0"), 1) },
+                {"Babo right45", new Animation(Content.Load<Texture2D>("Babo/Babo right45 s0"), 1) },
+                {"Babo left45", new Animation(Content.Load<Texture2D>("Babo/Babo left45 s0"), 1) },
+                {"Babo down-22_5", new Animation(Content.Load<Texture2D>("Babo/Babo down-22_5 s0"), 1) },
+                {"Babo up-22_5", new Animation(Content.Load<Texture2D>("Babo/Babo up-22_5 s0"), 1) },
+                {"Babo right-22_5", new Animation(Content.Load<Texture2D>("Babo/Babo right-22_5 s0"), 1) },
+                {"Babo left-22_5", new Animation(Content.Load<Texture2D>("Babo/Babo left-22_5 s0"), 1) },
+                {"Babo down-45", new Animation(Content.Load<Texture2D>("Babo/Babo down-45 s0"), 1) },
+                {"Babo up-45", new Animation(Content.Load<Texture2D>("Babo/Babo up-45 s0"), 1) },
+                {"Babo right-45", new Animation(Content.Load<Texture2D>("Babo/Babo right-45 s0"), 1) },
+                {"Babo left-45", new Animation(Content.Load<Texture2D>("Babo/Babo left-45 s0"), 1) },
+                {"Babo up hit", new Animation(Content.Load<Texture2D>("Babo/Babo up hit"), 1) },
+
+            };
+
+            var sightAnimation = new Dictionary<string, Animation>()
+            {
+                {"ON", new Animation(Content.Load<Texture2D>("Sight/Sight_on"), 1) },
+                {"OFF", new Animation(Content.Load<Texture2D>("Sight/Sight_off"), 1) },
+            };
+
             // TODO: use this.Content to load your game content here
 
-            var slugTexture = Content.Load<Texture2D>("Babo down0 s0");
-            var sightTexture = Content.Load<Texture2D>("Sight_off");
+            var slugTexture = Content.Load<Texture2D>("Babo/Babo down0 s0");
+            var sightTexture = Content.Load<Texture2D>("Sight/Sight_off");
 
             _sprites = new List<Sprite>()
             {
-                new Character(slugTexture)
+                new Character(slugAnimations)
                 {
                     Position = new Vector2(100,100),
-                    Salt = new SaltWeapon(Content.Load<Texture2D>("Babo down hit")),
+                    Salt = new SaltWeapon(Content.Load<Texture2D>("Babo/Babo down hit")),
                     Scale = 0.25f,
                     HitBoxScale = 0.6f,
                     Input = new Input()
@@ -65,10 +97,10 @@ namespace BaboGame_test_2
                     }
                 },
 
-                 new Character(slugTexture)
+                 new Character(slugAnimations)
                 {
                     Position = new Vector2(300,300),
-                    Salt = new SaltWeapon(Content.Load<Texture2D>("Babo down hit")),
+                    Salt = new SaltWeapon(Content.Load<Texture2D>("Babo/Babo down hit")),
                     Scale = 0.25f,
                     HitBoxScale = 0.6f,
                     Input = new Input()
@@ -78,11 +110,10 @@ namespace BaboGame_test_2
                         Up = Keys.Up,
                         Down = Keys.Down,
                     },
-                    Effect = SpriteEffects.FlipHorizontally,
                     _color = Color.Silver,
                 },
 
-                new SightWeapon(sightTexture)
+                new SightWeapon(sightAnimation)
                 {
                     Position = new Vector2(100,100),
                     Scale = 0.2f,

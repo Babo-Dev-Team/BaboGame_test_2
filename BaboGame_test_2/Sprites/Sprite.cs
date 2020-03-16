@@ -17,7 +17,6 @@ using Microsoft.Xna.Framework;
     public class Sprite : ICloneable //Aquesta funció es reproduirà per tots els sprites; per tant, ha de ser clonable
     {
         //Variables globals d'un "Sprite"
-        protected Texture2D _texture;
         public float Scale = 1f;
         public float Layer = 0f;
         public SpriteEffects Effect = SpriteEffects.None;
@@ -30,8 +29,24 @@ using Microsoft.Xna.Framework;
         protected MouseState previousMouseState;
         public Input Input;
 
+        //Variables entorn a les animacions
+        protected AnimationManager _animationManager;
+        protected Dictionary<string, Animation> _animations;
+        protected Texture2D _texture;
+        protected Vector2 _position;
+
         //Variables vector per la posició, el centre i la direcció del personatge
-        public Vector2 Position;
+        public Vector2 Position
+        {
+            get { return _position; }
+            set
+            {
+                _position = value;
+
+                if (_animationManager != null)
+                    _animationManager.Position = _position; 
+            }
+        }
         public Vector2 Origin;
         public Vector2 Direction;
         public Vector2 Velocity;
@@ -60,6 +75,19 @@ using Microsoft.Xna.Framework;
             Origin = new Vector2(_texture.Width / 2, _texture.Height / 2);
         }
 
+        //Funció per definir les animacions del sprite
+        public Sprite(Dictionary<string, Animation> animations)
+        {
+            _animations = animations;
+            _animationManager = new AnimationManager(_animations.First().Value)
+            {
+                Ascale = Scale,
+                ALayer = Layer,
+                Aeffects = Effect,
+            };
+
+        }
+
         public virtual void Update(GameTime gameTime, List<Sprite> sprites)
         {
 
@@ -68,7 +96,18 @@ using Microsoft.Xna.Framework;
         //Funció per dibuixar el sprite en pantalla
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_texture, Position, null, _color, _rotation, Origin, Scale, Effect, Layer);
+            if (_texture != null)
+                spriteBatch.Draw(_texture, Position, null, _color, _rotation, Origin, Scale, Effect, Layer);
+            else if (_animationManager != null)
+            {
+                _animationManager.Ascale = Scale;
+                _animationManager.ALayer = Layer;
+                _animationManager.Aeffects = Effect;
+                _animationManager.Acolor = _color;
+                _animationManager.AHitBoxScale = HitBoxScale;
+                _animationManager.Draw(spriteBatch);
+            }
+            else throw new Exception("No tens cap textura per aquest sprite");
         }
 
         //Funció per clonar els sprites
@@ -84,7 +123,10 @@ using Microsoft.Xna.Framework;
         {
             get
             {
-            return new Rectangle((int)Position.X, (int)Position.Y, (int)(_texture.Width*Scale*HitBoxScale), (int)(_texture.Height*Scale*HitBoxScale));
+            if (_texture != null)
+                return new Rectangle((int)Position.X, (int)Position.Y, (int)(_texture.Width * Scale * HitBoxScale), (int)(_texture.Height * Scale * HitBoxScale));
+            else
+                return _animationManager.AnimationRectangle();
             }
         }
 

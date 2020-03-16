@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 
 /*
+ * Classe que defineix els controls del videojoc
  */
 
 
