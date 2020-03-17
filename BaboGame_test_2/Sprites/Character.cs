@@ -84,11 +84,10 @@ namespace BaboGame_test_2
             Velocity = Vector2.Zero;
 
             //Defineix la direcció de dispar del personatge
-            Direction = new Vector2((Mouse.GetState().Position.X - this.Position.X) / 
-                (float)Math.Sqrt(Math.Pow(Mouse.GetState().Position.X - this.Position.X, 2) + Math.Pow(Mouse.GetState().Position.Y - this.Position.Y, 2)),
-                (Mouse.GetState().Position.Y - this.Position.Y) /
-                (float)Math.Sqrt(Math.Pow(Mouse.GetState().Position.X - this.Position.X, 2) + Math.Pow(Mouse.GetState().Position.Y - this.Position.Y, 2)));
+            Direction = new Vector2((Mouse.GetState().Position.X - this.Position.X), (Mouse.GetState().Position.Y - this.Position.Y));
+            Direction = VectorOps.UnitVector(Direction);
 
+            
             //Reprodueix l'animació
             SetAnimations();
             _animationManager.Update(gameTime);
