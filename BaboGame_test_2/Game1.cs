@@ -43,7 +43,7 @@ namespace BaboGame_test_2
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            var slugAnimations = new Dictionary<string, Animation>()
+            Dictionary<string, Animation> slugAnimations = new Dictionary<string, Animation>()
             {
                 {"Babo down0", new Animation(Content.Load<Texture2D>("Babo/Babo down0"), 6) },
                 {"Babo up0", new Animation(Content.Load<Texture2D>("Babo/Babo up0 s0"), 1) },

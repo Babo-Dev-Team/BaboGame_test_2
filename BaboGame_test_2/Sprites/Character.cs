@@ -7,19 +7,22 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 
-/*
- * Defineix el sprite del personatge que el jugador controlarà
- */
+namespace BaboGame_test_2
+{
+
+    /*
+     * Defineix el sprite del personatge que el jugador controlarà
+     */
 
     public class Character : Sprite
     {
-    //Defineix el sprite de la salt que disparar el llimac i la direcció
-    public SaltWeapon Salt;
-    public float WeaponDirection = 0f;
-    //Identificadors per la colisió
-    public bool SaltPain = false;
-    public Vector2 SaltHitDirection;
-    float _PainTimer = 0f;
+        //Defineix el sprite de la salt que disparar el llimac i la direcció
+        public SaltWeapon Salt;
+        public float WeaponDirection = 0f;
+        //Identificadors per la colisió
+        public bool SaltPain = false;
+        public Vector2 SaltHitDirection;
+        float _PainTimer = 0f;
 
         public Character(Texture2D texture)
             : base(texture)
@@ -35,10 +38,10 @@ using Microsoft.Xna.Framework;
 
         public override void Update(GameTime gameTime, List<Sprite> sprites)
         {
-            if(SaltPain)
+            if (SaltPain)
                 _PainTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            
-            if(_PainTimer > 0.3f)
+
+            if (_PainTimer > 0.3f)
             {
                 _PainTimer = 0f;
                 SaltPain = false;
@@ -50,12 +53,12 @@ using Microsoft.Xna.Framework;
             foreach (var sprite in sprites)
             {
                 if ((sprite == this))
-                        continue;
+                    continue;
 
                 //Detecta si ha sigut tocat per sal
                 if (this.IsTouchingBottom(sprite) || this.IsTouchingLeft(sprite) || this.IsTouchingRight(sprite) || this.IsTouchingTop(sprite))
                 {
-                if ( (sprite.IDcharacter != IDcharacter) && (sprite.IDcharacter != 0) &&(sprite.IsSaltShoot))
+                    if ((sprite.IDcharacter != IDcharacter) && (sprite.IDcharacter != 0) && (sprite.IsSaltShoot))
                     {
                         SaltPain = true;
                         _PainTimer = 0f;
@@ -70,18 +73,21 @@ using Microsoft.Xna.Framework;
                 //Col·lisió física amb objectes
                 if ((this.Velocity.X > 0 && this.IsTouchingLeft(sprite)) ||
                         (this.Velocity.X < 0 && this.IsTouchingRight(sprite)))
-                        this.Velocity.X = 0;
+                    this.Velocity.X = 0;
 
-                 if ((this.Velocity.Y > 0 && this.IsTouchingTop(sprite)) ||
-                        (this.Velocity.Y < 0 && this.IsTouchingBottom(sprite)))
-                        this.Velocity.Y = 0;
+                if ((this.Velocity.Y > 0 && this.IsTouchingTop(sprite)) ||
+                       (this.Velocity.Y < 0 && this.IsTouchingBottom(sprite)))
+                    this.Velocity.Y = 0;
             }
 
             Position += Velocity;
             Velocity = Vector2.Zero;
 
             //Defineix la direcció de dispar del personatge
-            Direction = new Vector2((Mouse.GetState().Position.X - this.Position.X) / (float)Math.Sqrt(Math.Pow(Mouse.GetState().Position.X - this.Position.X, 2) + Math.Pow(Mouse.GetState().Position.Y - this.Position.Y, 2)), (Mouse.GetState().Position.Y - this.Position.Y) / (float)Math.Sqrt(Math.Pow(Mouse.GetState().Position.X - this.Position.X, 2) + Math.Pow(Mouse.GetState().Position.Y - this.Position.Y, 2)));
+            Direction = new Vector2((Mouse.GetState().Position.X - this.Position.X) / 
+                (float)Math.Sqrt(Math.Pow(Mouse.GetState().Position.X - this.Position.X, 2) + Math.Pow(Mouse.GetState().Position.Y - this.Position.Y, 2)),
+                (Mouse.GetState().Position.Y - this.Position.Y) /
+                (float)Math.Sqrt(Math.Pow(Mouse.GetState().Position.X - this.Position.X, 2) + Math.Pow(Mouse.GetState().Position.Y - this.Position.Y, 2)));
 
             //Reprodueix l'animació
             SetAnimations();
@@ -133,10 +139,10 @@ using Microsoft.Xna.Framework;
 
             if (SaltPain)
             {
-                
+
                 Velocity.X += LinearVelocity * SaltHitDirection.X;
                 Velocity.Y += LinearVelocity * SaltHitDirection.Y;
-                
+
             }
         }
 
@@ -148,9 +154,9 @@ using Microsoft.Xna.Framework;
                 //Animació de ser colpejat per la salt
                 if ((SaltHitDirection.X > Math.Cos(5 * Math.PI / 4) && (SaltHitDirection.X < Math.Cos(Math.PI / 4)) && (SaltHitDirection.Y < Math.Sin(5 * Math.PI / 4))))
                     _animationManager.Play(_animations["Babo up hit"]);
-                if ((SaltHitDirection.Y > Math.Sin(- Math.PI / 4) && (SaltHitDirection.Y < Math.Sin(Math.PI / 4)) && (SaltHitDirection.X < Math.Cos(5 * Math.PI / 4))))
+                if ((SaltHitDirection.Y > Math.Sin(-Math.PI / 4) && (SaltHitDirection.Y < Math.Sin(Math.PI / 4)) && (SaltHitDirection.X < Math.Cos(5 * Math.PI / 4))))
                     _animationManager.Play(_animations["Babo down hit"]);
-                if ((SaltHitDirection.Y > Math.Sin(- Math.PI / 4) && (SaltHitDirection.Y < Math.Sin(Math.PI / 4)) && (SaltHitDirection.Y < Math.Cos(Math.PI / 4))))
+                if ((SaltHitDirection.Y > Math.Sin(-Math.PI / 4) && (SaltHitDirection.Y < Math.Sin(Math.PI / 4)) && (SaltHitDirection.Y < Math.Cos(Math.PI / 4))))
                     _animationManager.Play(_animations["Babo down hit"]);
                 if ((SaltHitDirection.X > Math.Cos(5 * Math.PI / 4) && (SaltHitDirection.X < Math.Cos(Math.PI / 4)) && (SaltHitDirection.Y < Math.Sin(Math.PI / 4))))
                     _animationManager.Play(_animations["Babo down hit"]);
@@ -159,53 +165,53 @@ using Microsoft.Xna.Framework;
             }
             else
             {
-
+                float angle = VectorOps.Vector2ToDeg(Direction);
                 //Detecció del angle de dispar amb la corresponent animació (probablement s'haurà de fer de forma més eficient) -- Angle entre animacions: 18 graus || pi/10 radiants -- Desfasament: 9 graus || pi/20 radiant
-                if ((Direction.X > Math.Cos(9)) && (Direction.Y > Math.Sin(-Math.PI / 20)) && (Direction.Y < Math.Sin(Math.PI / 20)))
+                if ((angle <= 9 && angle >= 0) || (angle <= 360 && angle > 351))
                     _animationManager.Play(_animations["Babo right0"]);
-                else if ((Direction.X < Math.Cos(Math.PI / 20)) && (Direction.X > Math.Cos(3 * Math.PI / 20)) && (Direction.Y > Math.Sin(Math.PI / 20)) && (Direction.Y < Math.Sin(3 * Math.PI / 20)))
+                else if (angle <= 27 && angle > 9)
                     _animationManager.Play(_animations["Babo right-22_5"]);
-                else if ((Direction.X < Math.Cos(3 * Math.PI / 20)) && (Direction.X > Math.Cos(Math.PI / 4)) && (Direction.Y > Math.Sin(3 * Math.PI / 20)) && (Direction.Y < Math.Sin(Math.PI / 4)))
+                else if (angle <= 45 && angle > 27)
                     _animationManager.Play(_animations["Babo right-45"]);
-                else if ((Direction.X < Math.Cos(Math.PI / 4)) && (Direction.X > Math.Cos(7 * Math.PI / 20)) && (Direction.Y > Math.Sin(Math.PI / 4)) && (Direction.Y < Math.Sin(7 * Math.PI / 20)))
+                else if (angle <= 63 && angle > 45)
                     _animationManager.Play(_animations["Babo down45"]);
-                else if ((Direction.X < Math.Cos(7 * Math.PI / 20)) && (Direction.X > Math.Cos(9 * Math.PI / 20)) && (Direction.Y > Math.Sin(7 * Math.PI / 20)) && (Direction.Y < Math.Sin(9 * Math.PI / 20)))
+                else if (angle <= 81 && angle > 63)
                     _animationManager.Play(_animations["Babo down22_5"]);
-                else if ((Direction.X < Math.Cos(9 * Math.PI / 20)) && (Direction.X > Math.Cos(11 * Math.PI / 20)) && (Direction.Y > Math.Sin(9 * Math.PI / 20)))
+                else if (angle <= 99 && angle > 81)
                     _animationManager.Play(_animations["Babo down0"]);
-                else if ((Direction.X < Math.Cos(11 * Math.PI / 20)) && (Direction.X > Math.Cos(13 * Math.PI / 20)) && (Direction.Y > Math.Sin(13 * Math.PI / 20)) && (Direction.Y < Math.Sin(11 * Math.PI / 20)))
+                else if (angle <= 117 && angle > 99)
                     _animationManager.Play(_animations["Babo down-22_5"]);
-                else if ((Direction.X < Math.Cos(13 * Math.PI / 20)) && (Direction.X > Math.Cos(3 * Math.PI / 4)) && (Direction.Y > Math.Sin(3 * Math.PI / 4)) && (Direction.Y < Math.Sin(13 * Math.PI / 20)))
+                else if (angle <= 135 && angle > 117)
                     _animationManager.Play(_animations["Babo down-45"]);
-                else if ((Direction.X < Math.Cos(3 * Math.PI / 4)) && (Direction.X > Math.Cos(17 * Math.PI / 20)) && (Direction.Y > Math.Sin(17 * Math.PI / 20)) && (Direction.Y < Math.Sin(3 * Math.PI / 4)))
+                else if (angle <= 153 && angle > 135)
                     _animationManager.Play(_animations["Babo left45"]);
-                else if ((Direction.X < Math.Cos(17 * Math.PI / 20)) && (Direction.X > Math.Cos(19 * Math.PI / 20)) && (Direction.Y > Math.Sin(19 * Math.PI / 20)) && (Direction.Y < Math.Sin(17 * Math.PI / 20)))
+                else if (angle <= 171 && angle > 153)
                     _animationManager.Play(_animations["Babo left22_5"]);
-                else if ((Direction.X < Math.Cos(19 * Math.PI / 20)) && (Direction.Y > Math.Sin(21 * Math.PI / 20)) && (Direction.Y < Math.Sin(19 * Math.PI / 20)))
+                else if (angle <= 189 && angle > 171)
                     _animationManager.Play(_animations["Babo left0"]);
-                else if ((Direction.X < Math.Cos(23 * Math.PI / 20)) && (Direction.X > Math.Cos(21 * Math.PI / 20)) && (Direction.Y > Math.Sin(23 * Math.PI / 20)) && (Direction.Y < Math.Sin(21 * Math.PI / 20)))
+                else if (angle <= 207 && angle > 189)
                     _animationManager.Play(_animations["Babo left-22_5"]);
-                else if ((Direction.X < Math.Cos(5 * Math.PI / 4)) && (Direction.X > Math.Cos(23 * Math.PI / 20)) && (Direction.Y > Math.Sin(5 * Math.PI / 4)) && (Direction.Y < Math.Sin(23 * Math.PI / 20)))
+                else if (angle <= 225 && angle > 207)
                     _animationManager.Play(_animations["Babo left-45"]);
-                else if ((Direction.X < Math.Cos(27 * Math.PI / 20)) && (Direction.X > Math.Cos(5 * Math.PI / 4)) && (Direction.Y > Math.Sin(27 * Math.PI / 20)) && (Direction.Y < Math.Sin(5 * Math.PI / 4)))
+                else if (angle <= 243 && angle > 225)
                     _animationManager.Play(_animations["Babo up45"]);
-                else if ((Direction.X < Math.Cos(29 * Math.PI / 20)) && (Direction.X > Math.Cos(27 * Math.PI / 20)) && (Direction.Y > Math.Sin(29 * Math.PI / 20)) && (Direction.Y < Math.Sin(27 * Math.PI / 20)))
+                else if (angle <= 261 && angle > 243)
                     _animationManager.Play(_animations["Babo up22_5"]);
-                else if ((Direction.X < Math.Cos(31 * Math.PI / 20)) && (Direction.X > Math.Cos(29 * Math.PI / 20)) && (Direction.Y < Math.Sin(29 * Math.PI / 20)))
+                else if (angle <= 279 && angle > 261)
                     _animationManager.Play(_animations["Babo up0"]);
-                else if ((Direction.X < Math.Cos(33 * Math.PI / 20)) && (Direction.X > Math.Cos(31 * Math.PI / 20)) && (Direction.Y > Math.Sin(31 * Math.PI / 20)) && (Direction.Y < Math.Sin(33 * Math.PI / 20)))
+                else if (angle <= 297 && angle > 279)
                     _animationManager.Play(_animations["Babo up-22_5"]);
-                else if ((Direction.X < Math.Cos(35 * Math.PI / 20)) && (Direction.X > Math.Cos(33 * Math.PI / 20)) && (Direction.Y > Math.Sin(33 * Math.PI / 20)) && (Direction.Y < Math.Sin(35 * Math.PI / 20)))
+                else if (angle <= 315 && angle > 297)
                     _animationManager.Play(_animations["Babo up-45"]);
-                else if ((Direction.X < Math.Cos(37 * Math.PI / 20)) && (Direction.X > Math.Cos(35 * Math.PI / 20)) && (Direction.Y > Math.Sin(35 * Math.PI / 20)) && (Direction.Y < Math.Sin(37 * Math.PI / 20)))
+                else if (angle <= 333 && angle > 315)
                     _animationManager.Play(_animations["Babo right45"]);
-                else if ((Direction.X < Math.Cos(39 * Math.PI / 20)) && (Direction.X > Math.Cos(37 * Math.PI / 20)) && (Direction.Y > Math.Sin(37 * Math.PI / 20)) && (Direction.Y < Math.Sin(39 * Math.PI / 20)))
+                else if (angle <= 351 && angle > 333)
                     _animationManager.Play(_animations["Babo right22_5"]);
                 else
                     _animationManager.Play(_animations["Babo down0"]);
             }
         }
-        
+
         //Funció per crear la sal que ha de disparar el personatge
         private void AddSalt(List<Sprite> sprites)
         {
@@ -221,15 +227,13 @@ using Microsoft.Xna.Framework;
             salt.Parent = this;
             salt.Scale = 0.15f;
             salt.MousePosition = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
-            salt.Destination = new Vector2((Mouse.GetState().Position.X - this.Position.X) , (Mouse.GetState().Position.Y - this.Position.Y));
+            salt.Destination = new Vector2((Mouse.GetState().Position.X - this.Position.X), (Mouse.GetState().Position.Y - this.Position.Y));
             salt.SolidObject = false;
             salt.Layer = 0.41f;
             salt.IDcharacter = this.IDcharacter;
-            
+
             //Afegeix la sal a disparar
             sprites.Add(salt);
         }
-
-
     }
-
+}

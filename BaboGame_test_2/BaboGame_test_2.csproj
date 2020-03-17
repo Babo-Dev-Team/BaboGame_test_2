@@ -52,6 +52,7 @@
     <Compile Include="Sprites\SaltWeapon.cs" />
     <Compile Include="Sprites\SightWeapon.cs" />
     <Compile Include="Sprites\Sprite.cs" />
+    <Compile Include="VectorOps.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
