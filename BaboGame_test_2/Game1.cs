@@ -66,6 +66,7 @@ namespace BaboGame_test_2
                 {"Babo right-45", new Animation(Content.Load<Texture2D>("Babo/Babo right-45 s0"), 1) },
                 {"Babo left-45", new Animation(Content.Load<Texture2D>("Babo/Babo left-45 s0"), 1) },
                 {"Babo up hit", new Animation(Content.Load<Texture2D>("Babo/Babo up hit"), 1) },
+                {"Babo down hit", new Animation(Content.Load<Texture2D>("Babo/Babo down hit"), 1) },
 
             };
 
@@ -94,7 +95,8 @@ namespace BaboGame_test_2
                         Right = Keys.D,
                         Up = Keys.W,
                         Down = Keys.S,
-                    }
+                    },
+                    IDcharacter = 1,
                 },
 
                  new Character(slugAnimations)
@@ -111,6 +113,7 @@ namespace BaboGame_test_2
                         Down = Keys.Down,
                     },
                     _color = Color.Silver,
+                    IDcharacter = 2,
                 },
 
                 new SightWeapon(sightAnimation)

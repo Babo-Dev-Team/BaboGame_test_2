@@ -67,7 +67,9 @@ using Microsoft.Xna.Framework;
         //Variables relacionades amb la col·lisió
         public float HitBoxScale = 1f;
         public bool SolidObject = true;
-        
+        public int IDcharacter = 0;
+        public bool IsSaltShoot = false;
+
         //Funció principal per definir el sprite generat
         public Sprite(Texture2D texture)
         {

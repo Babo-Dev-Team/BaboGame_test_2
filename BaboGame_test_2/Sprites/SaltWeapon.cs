@@ -22,7 +22,7 @@ using Microsoft.Xna.Framework;
         public SaltWeapon(Texture2D texture)
             : base(texture)
         {
-
+           IsSaltShoot = true;
         }
 
         public override void Update(GameTime gameTime, List<Sprite> sprites)
@@ -36,6 +36,16 @@ using Microsoft.Xna.Framework;
             //Definir la posició final de la sal per ser eliminada
             if (((MousePosition.X >= Position.X - 10) && (MousePosition.X <= Position.X + 10)) && ((MousePosition.Y >= Position.Y - 10) && (MousePosition.Y <= Position.Y + 10)))
                 IsRemoved = true;
+
+            //Definir la colisió de la sal
+            foreach (var sprite in sprites)
+            {
+                if (this.IsTouchingBottom(sprite) || this.IsTouchingLeft(sprite) || this.IsTouchingRight(sprite) || this.IsTouchingTop(sprite))
+                {
+                    if((sprite.SolidObject || sprite.IsSaltShoot)&&(this.IDcharacter != sprite.IDcharacter))
+                        this.IsRemoved = true;
+                }
+            }
 
             //Reprodueix el moviment de la sal
             Position += Direction * LinearVelocity;
