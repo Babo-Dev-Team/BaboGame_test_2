@@ -74,7 +74,7 @@ namespace BaboGame_test_2
                 else angle = 0;
             }
             angle *= radToDegFact;
-            if(angle < 0)
+            if (angle < 0)
             {
                 angle += 360;
             }

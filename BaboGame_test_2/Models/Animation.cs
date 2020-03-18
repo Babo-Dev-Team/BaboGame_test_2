@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 
 /*
- * Classe que defineis el funcionament d'una sola animació
+ * Classe que defineix el funcionament d'una sola animació
  */
 
 

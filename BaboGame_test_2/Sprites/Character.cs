@@ -90,7 +90,7 @@ namespace BaboGame_test_2
             
             //Reprodueix l'animació
             SetAnimations();
-            _animationManager.Update(gameTime);
+            this._animationManager.Update(gameTime);
 
             //Funció de disparar
             if ((currentMouseState.LeftButton == ButtonState.Pressed) && (previousMouseState.LeftButton == ButtonState.Released))
@@ -225,8 +225,8 @@ namespace BaboGame_test_2
             salt.LifeSpan = 2f;
             salt.Parent = this;
             salt.Scale = 0.15f;
-            salt.MousePosition = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
-            salt.Destination = new Vector2((Mouse.GetState().Position.X - this.Position.X), (Mouse.GetState().Position.Y - this.Position.Y));
+            salt.Destination = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
+            salt.Trajectory = new Vector2((Mouse.GetState().Position.X - this.Position.X), (Mouse.GetState().Position.Y - this.Position.Y));
             salt.SolidObject = false;
             salt.Layer = 0.41f;
             salt.IDcharacter = this.IDcharacter;

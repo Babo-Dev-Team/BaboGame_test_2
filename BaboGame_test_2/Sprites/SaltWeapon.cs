@@ -15,9 +15,9 @@ using Microsoft.Xna.Framework;
     {
         //Variables per saber el camí de la sal
         private float _timer;
-        public Vector2 MousePosition;
-        public Vector2 Source;
         public Vector2 Destination;
+        public Vector2 Source;
+        public Vector2 Trajectory;
 
         public SaltWeapon(Texture2D texture)
             : base(texture)
@@ -34,7 +34,7 @@ using Microsoft.Xna.Framework;
                 IsRemoved = true;
 
             //Definir la posició final de la sal per ser eliminada
-            if (((MousePosition.X >= Position.X - 10) && (MousePosition.X <= Position.X + 10)) && ((MousePosition.Y >= Position.Y - 10) && (MousePosition.Y <= Position.Y + 10)))
+            if (((Destination.X >= Position.X - 10) && (Destination.X <= Position.X + 10)) && ((Destination.Y >= Position.Y - 10) && (Destination.Y <= Position.Y + 10)))
                 IsRemoved = true;
 
             //Definir la colisió de la sal
@@ -51,7 +51,7 @@ using Microsoft.Xna.Framework;
             Position += Direction * LinearVelocity;
             
             //Funcionament de canvi d'escala de la sal per donar la sensació d'un moviment parabòlic
-            if ((Math.Abs(Position.X - Source.X) < Math.Abs(Destination.X / 2)) && (Math.Abs(Position.Y - Source.Y) < Math.Abs(Destination.Y / 2)))
+            if ((Math.Abs(Position.X - Source.X) < Math.Abs(Trajectory.X / 2)) && (Math.Abs(Position.Y - Source.Y) < Math.Abs(Trajectory.Y / 2)))
                 Scale += 0.003f;
             else
                 Scale -= 0.003f;
