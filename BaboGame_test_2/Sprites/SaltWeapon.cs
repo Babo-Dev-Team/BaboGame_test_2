@@ -28,6 +28,8 @@ using Microsoft.Xna.Framework;
         public override void Update(GameTime gameTime, List<Sprite> sprites)
         {
             //Valorar el temps de vida de la sal a disparar i la eliminació d'aquest
+
+            // OJO!! AQUEST TIMER ESTÂ INICIALITZAT????
             _timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (_timer > LifeSpan)

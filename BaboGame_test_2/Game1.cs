@@ -13,8 +13,11 @@ namespace BaboGame_test_2
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        private List<Sprite> _sprites;
-        
+        private List<Sprite> characterSprites;
+        private List<Sprite> projectileSprites;
+        ProjectileEngine projectileEngine;
+
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -30,8 +33,9 @@ namespace BaboGame_test_2
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
             base.Initialize();
+            projectileSprites = new List<Sprite>();
+            projectileEngine = new ProjectileEngine(projectileSprites);
         }
 
         /// <summary>
@@ -81,7 +85,12 @@ namespace BaboGame_test_2
             var slugTexture = Content.Load<Texture2D>("Babo/Babo down0 s0");
             var sightTexture = Content.Load<Texture2D>("Sight/Sight_off");
 
-            _sprites = new List<Sprite>()
+            Texture2D projectileTexture = Content.Load<Texture2D>("Babo/Babo down hit");
+
+
+
+
+            characterSprites = new List<Sprite>()
             {
                 new Character(slugAnimations)
                 {
@@ -116,6 +125,7 @@ namespace BaboGame_test_2
                     IDcharacter = 2,
                 },
 
+                 //TODO: move this out of the list
                 new SightWeapon(sightAnimation)
                 {
                     Position = new Vector2(100,100),
@@ -146,9 +156,15 @@ namespace BaboGame_test_2
                Exit();
 
             // TODO: Add your update logic here
-            foreach (var sprite in _sprites.ToArray())
-                sprite.Update(gameTime, _sprites);
 
+            // Això hauria de moure els projectils, calcular les colisions i notificar als characters si hi ha hagut dany.
+            projectileEngine.UpdateProjectiles(gameTime, characterSprites);
+
+            foreach (var character in characterSprites.ToArray())
+            {
+                character.Update(gameTime, characterSprites);
+            }
+                                  
             PostUpdate();
 
             base.Update(gameTime);
@@ -157,11 +173,20 @@ namespace BaboGame_test_2
         //Funció per definir la mort dels objectes
         private void PostUpdate()
         {
-             for (int i=0; i < _sprites.Count; i++)
+             for (int i = 0; i < characterSprites.Count; i++)
             {
-                if (_sprites[i].IsRemoved)
+                if (characterSprites[i].IsRemoved)
                 {
-                    _sprites.RemoveAt(i);
+                    characterSprites.RemoveAt(i);
+                    i--;
+                }
+            }
+
+            for (int i = 0; i < projectileSprites.Count; i++)
+            {
+                if (projectileSprites[i].IsRemoved)
+                {
+                    projectileSprites.RemoveAt(i);
                     i--;
                 }
             }
@@ -178,8 +203,15 @@ namespace BaboGame_test_2
             // TODO: Add your drawing code here
             spriteBatch.Begin(SpriteSortMode.FrontToBack);
 
-            foreach (var sprite in _sprites)
+            foreach (var sprite in characterSprites)
+            {
                 sprite.Draw(spriteBatch);
+            }
+
+            foreach (var sprite in projectileSprites)
+            {
+                sprite.Draw(spriteBatch);
+            }
 
             spriteBatch.End();
 
