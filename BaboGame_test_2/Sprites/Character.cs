@@ -87,7 +87,6 @@ namespace BaboGame_test_2
             Direction = new Vector2((Mouse.GetState().Position.X - this.Position.X), (Mouse.GetState().Position.Y - this.Position.Y));
             Direction = VectorOps.UnitVector(Direction);
 
-            
             //Reprodueix l'animació
             SetAnimations();
             this._animationManager.Update(gameTime);
@@ -150,22 +149,17 @@ namespace BaboGame_test_2
         {
             if (SaltPain)
             {
+                float angle = VectorOps.Vector2ToDeg(SaltHitDirection);
                 //Animació de ser colpejat per la salt
-                if ((SaltHitDirection.X > Math.Cos(5 * Math.PI / 4) && (SaltHitDirection.X < Math.Cos(Math.PI / 4)) && (SaltHitDirection.Y < Math.Sin(5 * Math.PI / 4))))
+                if (angle < 305 && angle > 235)
                     _animationManager.Play(_animations["Babo up hit"]);
-                if ((SaltHitDirection.Y > Math.Sin(-Math.PI / 4) && (SaltHitDirection.Y < Math.Sin(Math.PI / 4)) && (SaltHitDirection.X < Math.Cos(5 * Math.PI / 4))))
+                else
                     _animationManager.Play(_animations["Babo down hit"]);
-                if ((SaltHitDirection.Y > Math.Sin(-Math.PI / 4) && (SaltHitDirection.Y < Math.Sin(Math.PI / 4)) && (SaltHitDirection.Y < Math.Cos(Math.PI / 4))))
-                    _animationManager.Play(_animations["Babo down hit"]);
-                if ((SaltHitDirection.X > Math.Cos(5 * Math.PI / 4) && (SaltHitDirection.X < Math.Cos(Math.PI / 4)) && (SaltHitDirection.Y < Math.Sin(Math.PI / 4))))
-                    _animationManager.Play(_animations["Babo down hit"]);
-
-
             }
             else
             {
-                float angle = VectorOps.Vector2ToDeg(Direction);
                 //Detecció del angle de dispar amb la corresponent animació (probablement s'haurà de fer de forma més eficient) -- Angle entre animacions: 18 graus || pi/10 radiants -- Desfasament: 9 graus || pi/20 radiant
+                float angle = VectorOps.Vector2ToDeg(Direction);
                 if ((angle <= 9 && angle >= 0) || (angle <= 360 && angle > 351))
                     _animationManager.Play(_animations["Babo right0"]);
                 else if (angle <= 27 && angle > 9)
