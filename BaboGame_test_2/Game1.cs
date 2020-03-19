@@ -20,6 +20,7 @@ namespace BaboGame_test_2
 
 
 
+
         private List<Character> characterSprites;           // Personatges (inclòs el jugador)
         private List<Projectile> projectileSprites;         // Projectils, creats per projectileEngine
         private List<Sprite> overlaySprites;                // Sprites de la UI, de moment només la mira
@@ -132,10 +133,10 @@ namespace BaboGame_test_2
                 
             // punter que apunta al personatge controlat pel jugador
             playerChar = characterSprites.ToArray()[0];
-
             _font = Content.Load<SpriteFont>("Font");
-            debugger = new Debugger(characterSprites, projectileSprites, overlaySprites, _font);
-            
+            debugger = new Debugger(characterSprites,projectileSprites,overlaySprites,_font);
+
+
         }
 
         /// <summary>
@@ -240,7 +241,6 @@ namespace BaboGame_test_2
             // TODO: Add your drawing code here
             spriteBatch.Begin(SpriteSortMode.FrontToBack);
             debugger.DrawText(spriteBatch);
-
             foreach (var sprite in characterSprites)
             {
                 sprite.Draw(spriteBatch);

@@ -19,7 +19,10 @@ namespace BaboGame_test_2
 
         public Debugger (List<Character> CharacterSprite, List<Projectile> ProjectileSprite, List<Sprite> overlaySprite, SpriteFont font)
         {
-            
+            _font = font;
+            _CharacterSprite = CharacterSprite;
+            _ProjectileSprite = ProjectileSprite;
+            _overlaySprite = overlaySprite;
         }
 
         public void DrawText(SpriteBatch spriteBatch)
@@ -28,7 +31,7 @@ namespace BaboGame_test_2
             int i = 0;
             foreach (var Character in _CharacterSprite)
             {
-                spriteBatch.DrawString(_font, string.Format("Text a mostrar"), new Vector2(10, fontY += 20), Color.Black);
+                spriteBatch.DrawString(_font, string.Format("Direction: {0}", VectorOps.Vector2ToDeg(Character.Direction)), new Vector2(10, fontY += 20), Color.Black);
             }
         }
     }
