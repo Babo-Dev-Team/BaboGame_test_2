@@ -29,6 +29,7 @@ namespace BaboGame_test_2
         public float Ascale = 1f;
         public float AHitBoxScale = 1f;
         public Color Acolor = Color.White;
+        private Rectangle frameRectangle;
 
         //Funció principal
         public AnimationManager(Animation animation)
@@ -44,10 +45,7 @@ namespace BaboGame_test_2
             AOrigin = new Vector2(_animation.FrameWidth / 2, _animation.FrameHeight / 2);
             spriteBatch.Draw(_animation.Texture,
                         Position,
-                        new Rectangle(this.currentFrame * _animation.FrameWidth,
-                                        0,
-                                        _animation.FrameWidth,
-                                        _animation.FrameHeight),
+                        frameRectangle,
                         Acolor,
                         _rotation,
                         AOrigin,
@@ -61,12 +59,18 @@ namespace BaboGame_test_2
         {
             if (_animation == animation)
                 return;
-            this._animation = animation;
+
+            _animation = animation;
 
             if(this.currentFrame > _animation.FrameCount)
             {
                this.currentFrame = 0;
             }
+
+            frameRectangle = new Rectangle(this.currentFrame * _animation.FrameWidth,
+                                        0,
+                                        _animation.FrameWidth,
+                                        _animation.FrameHeight);
         }
 
         //Parada de l'animació
@@ -91,7 +95,7 @@ namespace BaboGame_test_2
                 if (this.currentFrame >= _animation.FrameCount)
                     this.currentFrame = 0;
 
-                //CurrentFrame = _animation.CurrentFrame;
+                this.frameRectangle.X = currentFrame * _animation.FrameWidth;
             }
         }
 
