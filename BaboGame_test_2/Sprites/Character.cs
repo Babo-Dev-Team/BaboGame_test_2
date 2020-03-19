@@ -16,86 +16,88 @@ namespace BaboGame_test_2
 
     public class Character : Sprite
     {
-        //Defineix el sprite de la salt que disparar el llimac i la direcció
-        public SaltWeapon Salt;
-        public float WeaponDirection = 0f;
-        //Identificadors per la colisió
-        public bool SaltPain = false;
-        public Vector2 SaltHitDirection;
-        float _PainTimer = 0f;
-
+        // Constructors
         public Character(Texture2D texture)
             : base(texture)
         {
-
+            isHit = false;
         }
 
         public Character(Dictionary<string, Animation> animations)
            : base(animations)
         {
-
+            isHit = false;
         }
 
-        public void Update(GameTime gameTime, List<Character> sprites)
+        // interfície pública per moure el character
+        public void MoveLeft()
         {
-            if (SaltPain)
+            if (!isHit)
+            {
+                this.Velocity.X -= this.LinearVelocity;
+            }
+        }
+        public void MoveRight()
+        {
+            if (!isHit)
+            {
+                this.Velocity.X += this.LinearVelocity;
+            }
+        }
+        public void MoveUp()
+        {
+            if (!isHit)
+            {
+                this.Velocity.Y -= this.LinearVelocity;
+            }
+        }
+        public void MoveDown()
+        {
+            if (!isHit)
+            {
+                this.Velocity.Y += this.LinearVelocity;
+            }
+        }
+
+        // Identificadors per la colisió amb projectils
+        // mètode públic per restringir l'accés al flag isHit (mantenir-lo privat)
+        private bool isHit;
+        public bool IsHit()
+        {
+            return this.isHit;
+        }
+        private Vector2 hitDirection;
+        float _PainTimer = 0f;
+
+        // Detectem colisions i actualitzem posicions, timers i flags del character
+        public void Update(GameTime gameTime, List<Character> characterSprites)
+        {
+            if (isHit)
                 _PainTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (_PainTimer > 0.3f)
             {
                 _PainTimer = 0f;
-                SaltPain = false;
+                isHit = false;
             }
 
-            //Move();
-
-            //Condicions per fer parar el personatge en cas de col·lisió
-            foreach (var sprite in sprites)
+            // si tenim un impacte, desplaçament per impacte
+            if (isHit)
             {
-                if ((sprite == this))
-                    continue;
-
-                //Detecta si ha sigut tocat per sal
-                if (this.IsTouchingBottom(sprite) || this.IsTouchingLeft(sprite) || this.IsTouchingRight(sprite) || this.IsTouchingTop(sprite))
-                {
-                    if ((sprite.IDcharacter != IDcharacter) && (sprite.IDcharacter != 0) && (sprite.IsSaltShoot))
-                    {
-                        SaltPain = true;
-                        _PainTimer = 0f;
-                        SaltHitDirection = sprite.Direction;
-                        continue;
-                    }
-                }
-
-                if (!sprite.SolidObject)
-                    continue;
-
-                //Col·lisió física amb objectes
-                if ((this.Velocity.X > 0 && this.IsTouchingLeft(sprite)) ||
-                        (this.Velocity.X < 0 && this.IsTouchingRight(sprite)))
-                    this.Velocity.X = 0;
-
-                if ((this.Velocity.Y > 0 && this.IsTouchingTop(sprite)) ||
-                       (this.Velocity.Y < 0 && this.IsTouchingBottom(sprite)))
-                    this.Velocity.Y = 0;
+                Velocity.X += LinearVelocity * hitDirection.X;
+                Velocity.Y += LinearVelocity * hitDirection.Y;
             }
-
-            Position += Velocity;
+            
+            // si detectem colisions amb altres jugadors, no incrementem posició
+            if(!this.DetectCharCollisions(characterSprites))
+            {
+                Position += Velocity;
+            }
             Velocity = Vector2.Zero;
-
-            //Defineix la direcció de dispar del personatge
-            Direction = new Vector2((Mouse.GetState().Position.X - this.Position.X), (Mouse.GetState().Position.Y - this.Position.Y));
-            Direction = VectorOps.UnitVector(Direction);
 
             //Reprodueix l'animació
             SetAnimations();
             this._animationManager.Update(gameTime);
-
-            //Funció de disparar
-            if ((currentMouseState.LeftButton == ButtonState.Pressed) && (previousMouseState.LeftButton == ButtonState.Released))
-            {
-                //AddSalt(sprites);
-            }
 
             //"Equació" per definir a quina capa es mostrarà el "sprite" perquè un personatge no li estigui trapitjant la cara al altre
             float LayerValue = this.Position.Y / 10000;
@@ -105,76 +107,25 @@ namespace BaboGame_test_2
                 Layer = LayerValue;
         }
 
-        public void MoveLeft()
-        {       
-            this.Velocity.X -= this.LinearVelocity;
-            //this.Position += Velocity;
-            //Velocity = Vector2.Zero;
-        }
-        public void MoveRight()
+        // detectem colisions amb altres jugadors
+        public bool DetectCharCollisions(List<Character> charSprites)
         {
-            this.Velocity.X += this.LinearVelocity;
-            //this.Position += Velocity;
-            //Velocity = Vector2.Zero;
-        }
-        public void MoveUp()
-        {
-            this.Velocity.Y -= this.LinearVelocity;
-            //this.Position += Velocity;
-            //Velocity = Vector2.Zero;
-        }
-        public void MoveDown()
-        {
-            this.Velocity.Y += this.LinearVelocity;
-            //this.Position += Velocity;
-            //Velocity = Vector2.Zero;
-        }
-
-        //Funció per moure le personatge
-        private void Move()
-        {
-            //Defineix els estats del teclat i el ratolí
-            previousKey = currentKey;
-            currentKey = Keyboard.GetState();
-            previousMouseState = currentMouseState;
-            currentMouseState = Mouse.GetState();
-
-            //Controls del moviment del personatge
-            /*if (currentKey.IsKeyDown(Input.Up))
+            bool collisionDetected = false;
+            foreach (var character in charSprites)
+            if (character != this)
             {
-                Velocity.Y -= LinearVelocity;
+                collisionDetected = this.IsTouchingBottom(character) || this.IsTouchingLeft(character) 
+                                  || this.IsTouchingRight(character) || this.IsTouchingTop(character);
             }
-
-            if (currentKey.IsKeyDown(Input.Down))
-            {
-                Velocity.Y += LinearVelocity;
-            }
-
-            if (currentKey.IsKeyDown(Input.Left))
-            {
-                Velocity.X -= LinearVelocity;
-            }
-
-            if (currentKey.IsKeyDown(Input.Right))
-            {
-                Velocity.X += LinearVelocity;
-            }
-            */
-            if (SaltPain)
-            {
-
-                Velocity.X += LinearVelocity * SaltHitDirection.X;
-                Velocity.Y += LinearVelocity * SaltHitDirection.Y;
-
-            }
+            return collisionDetected;
         }
 
         //Apartat de les animacions
         protected virtual void SetAnimations()
         {
-            if (SaltPain)
+            if (isHit)
             {
-                float angle = VectorOps.Vector2ToDeg(SaltHitDirection);
+                float angle = VectorOps.Vector2ToDeg(hitDirection);
                 //Animació de ser colpejat per la salt
                 if (angle < 305 && angle > 235)
                     _animationManager.Play(_animations["Babo up hit"]);
@@ -230,28 +181,10 @@ namespace BaboGame_test_2
             }
         }
 
-        //Funció per crear la sal que ha de disparar el personatge
-        private void AddSalt(List<Sprite> sprites)
+        public void NotifyHit(Vector2 hitDirection, int shooterID, float damage)
         {
-            //Clonació del sprite de la sal
-            var salt = Salt.Clone() as SaltWeapon;
-
-            //Definir les característiques de la sal a disparar
-            salt.Direction = this.Direction;
-            salt.Position = this.Position;
-            salt.Source = this.Position;
-            salt.LinearVelocity = this.LinearVelocity * 2;
-            salt.LifeSpan = 2f;
-            salt.Parent = this;
-            salt.Scale = 0.15f;
-            salt.Destination = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
-            salt.Trajectory = new Vector2((Mouse.GetState().Position.X - this.Position.X), (Mouse.GetState().Position.Y - this.Position.Y));
-            salt.SolidObject = false;
-            salt.Layer = 0.41f;
-            salt.IDcharacter = this.IDcharacter;
-
-            //Afegeix la sal a disparar
-            sprites.Add(salt);
+            this.isHit = true;
+            this.hitDirection = hitDirection;
         }
     }
 }

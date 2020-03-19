@@ -14,9 +14,11 @@ namespace BaboGame_test_2
     class ProjectileEngine
     {
         private List<Projectile> projectileList;
-        //private Texture2D projectileTexture;
-        private const float masterProjVelocity = 20;
+
+        // constants per defecte dels projectils
+        private const float masterProjVelocity = 15;
         private const float masterProjScale = 0.15f;
+        private const float masterProjDamage = 10;
 
         // constructor de la classe, li passem la llista buida per a que la vagi omplint de projectils
         // i la funcio draw de game1.cs els pugui renderitzar
@@ -25,21 +27,16 @@ namespace BaboGame_test_2
             this.projectileList = projectileList;
         }
 
-        // definir la textura dels projectils. Separat del constructor per si ens interessa canviar-la al llarg de la partida
-        /*public void SetProjectileTexture(Texture2D texture)
-        {
-            projectileTexture = texture;
-        }*/
-
-        // afegim un projectil a la llista, inicialitzant-lo amb posicio origen i final i una velocitat de moment estandard
+        // afegim un projectil a la llista, inicialitzant-lo amb posicio origen i final i una velocitat de moment estàndard
         public void AddProjectile(Vector2 origin, Vector2 target, Texture2D projectileTexture, int shooterID)
         {
-            projectileList.Add(new Projectile(origin, target, masterProjVelocity, shooterID, projectileTexture, masterProjScale));
+            projectileList.Add(new Projectile(origin, target, masterProjVelocity, shooterID, projectileTexture, masterProjScale, masterProjDamage));
         }
 
+        // afegim un projectil amb velocitat configurable
         public void AddProjectile(Vector2 origin, Vector2 target, float velocity, Texture2D projectileTexture, int shooterID)
         {
-            projectileList.Add(new Projectile(origin, target, velocity, shooterID, projectileTexture, masterProjScale));
+            projectileList.Add(new Projectile(origin, target, velocity, shooterID, projectileTexture, masterProjScale, masterProjDamage));
         }
 
         // aquí estarà la gràcia. En comptes d'actualitzar-los un per un a cada objecte, agafarem
@@ -47,14 +44,14 @@ namespace BaboGame_test_2
         // caldrà fer saber als characters que han colisionat que tenen dany + la direcció de l'impacte.
         public void UpdateProjectiles(GameTime gameTime, List<Character> characterList)
         {
-            // moviment i colisions
-
             //Valorar el temps de vida de la sal a disparar i la eliminació d'aquest
             /* _timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
              if (_timer > LifeSpan)
                  IsRemoved = true;
             */
+
+            
             foreach (var projectile in this.projectileList)
             {
                 //Definir la posició final de la sal per ser eliminada
@@ -69,10 +66,11 @@ namespace BaboGame_test_2
                 {
                     if (projectile.DetectCollision(character))
                     {
-                        if ((character.SolidObject /*|| character.IsSaltShoot*/) && (projectile.shooterID != character.IDcharacter))
+                        if (projectile.shooterID != character.IDcharacter)
                         {
+                            // notificar el dany al personatge!!!
+                            character.NotifyHit(projectile.Direction, projectile.shooterID, projectile.damage);
                             projectile.KillProjectile();
-                            // TODO notificar el dany al personatge!!!
                         }
                     }
                 }
@@ -85,22 +83,18 @@ namespace BaboGame_test_2
         }
     }
 
-
-
-
     public class Projectile : Sprite
     {
-        // tots els atributs privats per matenir una interfícia pública neta i senzilla d'entendre
+        // ATRIBUTS
         private float timer;
         public Vector2 target { get; }
         private Vector2 origin;
         private Vector2 trajectory;
-        //private float scalarVelocity;
-        //private Vector2 currentPosition;
         public int shooterID { get; }
+        public float damage { get; }
         
         // constrctor per inicialitzar el projectil
-        public Projectile(Vector2 origin, Vector2 target, float velocity,int shooterID, Texture2D texture, float scale)
+        public Projectile(Vector2 origin, Vector2 target, float velocity,int shooterID, Texture2D texture, float scale, float damage)
             : base(texture)
         {
             this.shooterID = shooterID;
@@ -112,14 +106,11 @@ namespace BaboGame_test_2
             this.Position = this.origin;
             this.Direction = VectorOps.UnitVector(target - origin);
             this.Scale = scale;
+            this.damage = damage;
             //IsSaltShoot = true;
         }
-
-        public void UpdateCurrentPosition(Vector2 newPosition)
-        {
-            this.Position = newPosition;
-        }
         
+        // Movem el projectil de forma determinada per la direcció i velocitat linial
         public void Move()
         {
             this.Position += this.Direction * LinearVelocity;
@@ -131,11 +122,13 @@ namespace BaboGame_test_2
                 this.Scale -= 0.003f;
         }
 
+        // Marquem el projectil per la seva eliminació
         public void KillProjectile()
         {
             this.IsRemoved = true;
         }
 
+        // Detecció de colisió genèrica
         public bool DetectCollision(Sprite sprite)
         {
             if(sprite != this)
