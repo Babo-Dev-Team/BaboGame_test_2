@@ -30,7 +30,14 @@ namespace BaboGame_test_2
                     tan = vector.Y / vector.X;
                     angle = (float)Math.Atan(tan);
                 }
-                else angle = 0;
+                else
+                {
+                    if (vector.Y > 0)
+                    {
+                        angle = (0.5f * pi);
+                    }
+                    else angle = (1.5f * pi);
+                }
             }
 
             if(vector.X < 0)
@@ -71,7 +78,14 @@ namespace BaboGame_test_2
                     tan = Math.Abs(vector.Y / vector.X); 
                     angle = (float)Math.Atan(tan);
                 }
-                else angle = 0;
+                else
+                {
+                    if (vector.Y > 0)
+                    {
+                        angle = (0.5f * pi);
+                    }
+                    else angle = (1.5f * pi);
+                }
             }
             angle *= radToDegFact;
             if (angle < 0)
