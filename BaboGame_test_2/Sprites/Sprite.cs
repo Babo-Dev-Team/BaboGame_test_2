@@ -12,8 +12,8 @@ using Microsoft.Xna.Framework;
  * Aquest codi permet ser clonat per elaborar futurs "sprites" sense haver
  * de crear tot des del començament
  */
-
-
+ namespace BaboGame_test_2
+{
     public class Sprite : ICloneable //Aquesta funció es reproduirà per tots els sprites; per tant, ha de ser clonable
     {
         //Variables globals d'un "Sprite"
@@ -27,7 +27,7 @@ using Microsoft.Xna.Framework;
         protected KeyboardState previousKey;
         protected MouseState currentMouseState;
         protected MouseState previousMouseState;
-        public Input Input;
+        //public InputKeys Input;
 
         //Variables entorn a les animacions
         protected AnimationManager _animationManager;
@@ -44,18 +44,18 @@ using Microsoft.Xna.Framework;
                 _position = value;
 
                 if (_animationManager != null)
-                    _animationManager.Position = _position; 
+                    _animationManager.Position = _position;
             }
         }
         public Vector2 Origin;
         public Vector2 Direction;
         public Vector2 Velocity;
-    
+
         //Variables físiques del sprite
         public float RotationVelocity = 4f;
         public float LinearVelocity = 8f;
         protected float _rotation;
-        
+
 
         //Variable per relacionar sprites
         public Sprite Parent;
@@ -118,53 +118,55 @@ using Microsoft.Xna.Framework;
             return this.MemberwiseClone();
         }
 
-    
+
 
         //Objecte que farà de "Hitbox" del sprite
         public Rectangle Rectangle
         {
             get
             {
-            if (_texture != null)
-                return new Rectangle((int)Position.X, (int)Position.Y, (int)(_texture.Width * Scale * HitBoxScale), (int)(_texture.Height * Scale * HitBoxScale));
-            else
-                return _animationManager.AnimationRectangle();
+                if (_texture != null)
+                    return new Rectangle((int)Position.X, (int)Position.Y, (int)(_texture.Width * Scale * HitBoxScale), (int)(_texture.Height * Scale * HitBoxScale));
+                else
+                    return _animationManager.AnimationRectangle();
             }
         }
 
-    //Definició de col·lisió del sprite
-    #region Collision
-    protected bool IsTouchingLeft(Sprite sprite)
-    {
-        return this.Rectangle.Right + this.Velocity.X > sprite.Rectangle.Left &&
-                this.Rectangle.Left < sprite.Rectangle.Left &&
-                this.Rectangle.Bottom > sprite.Rectangle.Top &&
-                this.Rectangle.Top < sprite.Rectangle.Bottom;
+        //Definició de col·lisió del sprite
+        #region Collision
+        protected bool IsTouchingLeft(Sprite sprite)
+        {
+            return this.Rectangle.Right + this.Velocity.X > sprite.Rectangle.Left &&
+                    this.Rectangle.Left < sprite.Rectangle.Left &&
+                    this.Rectangle.Bottom > sprite.Rectangle.Top &&
+                    this.Rectangle.Top < sprite.Rectangle.Bottom;
+        }
+
+        protected bool IsTouchingRight(Sprite sprite)
+        {
+            return this.Rectangle.Left + this.Velocity.X < sprite.Rectangle.Right &&
+                    this.Rectangle.Right > sprite.Rectangle.Right &&
+                    this.Rectangle.Bottom > sprite.Rectangle.Top &&
+                    this.Rectangle.Top < sprite.Rectangle.Bottom;
+        }
+
+        protected bool IsTouchingTop(Sprite sprite)
+        {
+            return this.Rectangle.Bottom + this.Velocity.Y > sprite.Rectangle.Top &&
+                    this.Rectangle.Top < sprite.Rectangle.Top &&
+                    this.Rectangle.Right > sprite.Rectangle.Left &&
+                    this.Rectangle.Left < sprite.Rectangle.Right;
+        }
+
+        protected bool IsTouchingBottom(Sprite sprite)
+        {
+            return this.Rectangle.Top + this.Velocity.Y < sprite.Rectangle.Bottom &&
+                    this.Rectangle.Bottom > sprite.Rectangle.Bottom &&
+                    this.Rectangle.Right > sprite.Rectangle.Left &&
+                    this.Rectangle.Left < sprite.Rectangle.Right;
+        }
+        #endregion
     }
 
-    protected bool IsTouchingRight(Sprite sprite)
-    {
-        return this.Rectangle.Left + this.Velocity.X < sprite.Rectangle.Right &&
-                this.Rectangle.Right > sprite.Rectangle.Right &&
-                this.Rectangle.Bottom > sprite.Rectangle.Top &&
-                this.Rectangle.Top < sprite.Rectangle.Bottom;
-    }
-
-    protected bool IsTouchingTop(Sprite sprite)
-    {
-        return this.Rectangle.Bottom + this.Velocity.Y > sprite.Rectangle.Top &&
-                this.Rectangle.Top < sprite.Rectangle.Top &&
-                this.Rectangle.Right > sprite.Rectangle.Left &&
-                this.Rectangle.Left < sprite.Rectangle.Right;
-    }
-
-    protected bool IsTouchingBottom(Sprite sprite)
-    {
-        return this.Rectangle.Top + this.Velocity.Y < sprite.Rectangle.Bottom &&
-                this.Rectangle.Bottom > sprite.Rectangle.Bottom &&
-                this.Rectangle.Right > sprite.Rectangle.Left &&
-                this.Rectangle.Left < sprite.Rectangle.Right;
-    }
-    #endregion
 }
 

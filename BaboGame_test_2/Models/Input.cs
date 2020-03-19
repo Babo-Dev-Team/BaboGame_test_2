@@ -10,13 +10,15 @@ using Microsoft.Xna.Framework;
 /*
  * Classe que defineix els controls del videojoc
  */
-
-
-    public class Input
+ namespace BaboGame_test_2
+{
+    public static class InputKeys
     {
-        public Keys Up;
-        public Keys Down;
-        public Keys Left;
-        public Keys Right;
+        public static Keys Up;
+        public static Keys Down;
+        public static Keys Left;
+        public static Keys Right;
     }
+}
+
 

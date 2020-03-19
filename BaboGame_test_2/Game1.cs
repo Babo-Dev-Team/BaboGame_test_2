@@ -2,6 +2,9 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
+using System.Text;
+using System.Linq;
+using System;
 
 namespace BaboGame_test_2
 {
@@ -13,8 +16,16 @@ namespace BaboGame_test_2
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        private List<Sprite> _sprites;
-        
+        private List<Character> characterSprites;           // Personatges (inclòs el jugador)
+        private List<Projectile> projectileSprites;         // Projectils, creats per projectileEngine
+        private List<Sprite> overlaySprites;                // Sprites de la UI, de moment només la mira
+
+        ProjectileEngine projectileEngine;
+        InputManager inputManager = new InputManager(Keys.W, Keys.S, Keys.A, Keys.D); // El passem ja inicialitzat als objectes
+
+        Character playerChar;                               // Punter cap al character controlat pel jugador
+        Texture2D projectileTexture;                        // Textura per instanciar projectils
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -29,9 +40,9 @@ namespace BaboGame_test_2
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
             base.Initialize();
+            projectileSprites = new List<Projectile>();
+            projectileEngine = new ProjectileEngine(projectileSprites);
         }
 
         /// <summary>
@@ -78,47 +89,35 @@ namespace BaboGame_test_2
                 {"OFF", new Animation(Content.Load<Texture2D>("Sight/Sight_off"), 1) },
             };
 
-            // TODO: use this.Content to load your game content here
-
             var slugTexture = Content.Load<Texture2D>("Babo/Babo down0 s0");
             var sightTexture = Content.Load<Texture2D>("Sight/Sight_off");
 
-            _sprites = new List<Sprite>()
+            projectileTexture = Content.Load<Texture2D>("Babo/Babo down hit");
+
+            characterSprites = new List<Character>()
             {
                 new Character(slugAnimations)
                 {
                     Position = new Vector2(100,100),
-                    Salt = new SaltWeapon(Content.Load<Texture2D>("Babo/Babo down hit")),
                     Scale = 0.25f,
                     HitBoxScale = 0.6f,
-                    Input = new Input()
-                    {
-                        Left = Keys.A,
-                        Right = Keys.D,
-                        Up = Keys.W,
-                        Down = Keys.S,
-                    },
                     IDcharacter = 1,
                 },
 
                  new Character(slugAnimations)
                 {
                     Position = new Vector2(300,300),
-                    Salt = new SaltWeapon(Content.Load<Texture2D>("Babo/Babo down hit")),
                     Scale = 0.25f,
                     HitBoxScale = 0.6f,
-                    Input = new Input()
-                    {
-                        Left = Keys.Left,
-                        Right = Keys.Right,
-                        Up = Keys.Up,
-                        Down = Keys.Down,
-                    },
                     _color = Color.Silver,
                     IDcharacter = 2,
                 },
+             };
 
-                new SightWeapon(sightAnimation)
+            // La mira necessita que li passem inputManager per obtenir la posició del ratolí
+            overlaySprites = new List<Sprite>()
+            {
+                new SightWeapon(sightAnimation, inputManager)
                 {
                     Position = new Vector2(100,100),
                     Scale = 0.2f,
@@ -126,6 +125,9 @@ namespace BaboGame_test_2
                     Layer = 1f,
                 },
             };
+                
+            // punter que apunta al personatge controlat pel jugador
+            playerChar = characterSprites.ToArray()[0];
         }
 
         /// <summary>
@@ -147,23 +149,73 @@ namespace BaboGame_test_2
            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                Exit();
 
-            // TODO: Add your update logic here
-            foreach (var sprite in _sprites.ToArray())
-                sprite.Update(gameTime, _sprites);
+            // Detectem inputs al teclat
+            inputManager.detectKeysPressed();
+
+            // Actualitzem direcció i moviment del playerChar segons els inputs
+            playerChar.Direction = VectorOps.UnitVector(inputManager.GetMousePosition() - playerChar.Position);
+           
+            if (inputManager.RightCtrlActive())
+            {
+                playerChar.MoveRight();
+            }
+            else if (inputManager.LeftCtrlActive())
+            {
+                playerChar.MoveLeft();
+            }
+            else if (inputManager.UpCtrlActive())
+            {
+                playerChar.MoveUp();
+            }
+            else if (inputManager.DownCtrlActive())
+            {
+                playerChar.MoveDown();
+            }
+
+            // llançem projectils segons els inputs del jugador
+            inputManager.DetectMouseClicks();
+            if (inputManager.LeftMouseClick())
+            {
+                Vector2 projOrigin = playerChar.Position;
+                Vector2 projTarget = inputManager.GetMousePosition();
+                int shooterID = 1; // caldrà gestionar els ID's des del server
+                projectileEngine.AddProjectile(projOrigin, projTarget, projectileTexture, shooterID);
+            }
+
+            // Això hauria de moure els projectils, calcular les colisions i notificar als characters si hi ha hagut dany.
+            projectileEngine.UpdateProjectiles(gameTime, characterSprites);
+
+            foreach (var character in characterSprites.ToArray())
+            {
+                character.Update(gameTime, characterSprites);
+            }
+
+            foreach (var overlay in this.overlaySprites)
+            {
+                overlay.Update(gameTime, overlaySprites);
+            }
 
             PostUpdate();
-
             base.Update(gameTime);
         }
 
         //Funció per definir la mort dels objectes
         private void PostUpdate()
         {
-             for (int i=0; i < _sprites.Count; i++)
+             for (int i = 0; i < characterSprites.Count; i++)
             {
-                if (_sprites[i].IsRemoved)
+                if (characterSprites[i].IsRemoved)
                 {
-                    _sprites.RemoveAt(i);
+                    characterSprites.RemoveAt(i);
+                    i--;
+                }
+            }
+
+            for (int i = 0; i < projectileSprites.Count; i++)
+            {
+                if (projectileSprites[i].IsRemoved)
+                {
+                    projectileSprites.RemoveAt(i);
                     i--;
                 }
             }
@@ -180,9 +232,20 @@ namespace BaboGame_test_2
             // TODO: Add your drawing code here
             spriteBatch.Begin(SpriteSortMode.FrontToBack);
 
-            foreach (var sprite in _sprites)
+            foreach (var sprite in characterSprites)
+            {
                 sprite.Draw(spriteBatch);
+            }
 
+            foreach (var sprite in projectileSprites)
+            {
+                sprite.Draw(spriteBatch);
+            }
+
+            foreach (var overlay in overlaySprites)
+            {
+                overlay.Draw(spriteBatch);
+            }
             spriteBatch.End();
 
             base.Draw(gameTime);
