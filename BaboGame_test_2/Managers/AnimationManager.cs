@@ -29,6 +29,7 @@ namespace BaboGame_test_2
         public float Ascale = 1f;
         public float AHitBoxScale = 1f;
         public Color Acolor = Color.White;
+    
 
         //Funció principal
         public AnimationManager(Animation animation)
@@ -57,7 +58,7 @@ namespace BaboGame_test_2
         }
 
         //Reproducció de l'animació
-        public void Play(Animation animation)
+        public void Play(Animation animation, float animationSpeed)
         {
             if (_animation == animation)
                 return;
