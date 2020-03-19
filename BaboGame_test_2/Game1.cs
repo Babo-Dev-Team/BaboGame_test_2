@@ -239,7 +239,7 @@ namespace BaboGame_test_2
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            spriteBatch.Begin(SpriteSortMode.FrontToBack);
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, null, SamplerState.LinearWrap);
             debugger.DrawText(spriteBatch);
             foreach (var sprite in characterSprites)
             {

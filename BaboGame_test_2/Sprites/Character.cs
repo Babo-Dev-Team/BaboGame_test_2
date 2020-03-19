@@ -135,7 +135,9 @@ namespace BaboGame_test_2
             }
             else
             {
-                //Detecció del angle de dispar amb la corresponent animació (probablement s'haurà de fer de forma més eficient) -- Angle entre animacions: 18 graus || pi/10 radiants -- Desfasament: 9 graus || pi/20 radiant
+                // Detecció del angle de dispar amb la corresponent animació (probablement s'haurà de fer de forma més eficient) 
+                // Angle entre animacions: 18 graus || pi/10 radiants -- Desfasament: 9 graus || pi/20 radiant
+                
                 float angle = VectorOps.Vector2ToDeg(Direction);
                 if ((angle <= 9 && angle >= 0) || (angle <= 360 && angle > 351))
                     _animationManager.Play(_animations["Babo right0"]);

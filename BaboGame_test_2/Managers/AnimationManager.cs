@@ -11,14 +11,15 @@ using Microsoft.Xna.Framework;
  * Classe que desenvolupa el funcionament d'una animació al mateix moment
  */
 
-
+namespace BaboGame_test_2
+{
     public class AnimationManager
     {
         //Variables entor a l'animació
         private Animation _animation;
         private float _timer;
         public Vector2 Position { get; set; }
-        public int CurrentFrame = 0;
+        private int currentFrame;
 
         //Variables entorn el dibuixat de la imatge i relació amb el sprite
         public float _rotation = 0f;
@@ -34,15 +35,16 @@ using Microsoft.Xna.Framework;
         {
             _animation = animation;
             this._timer = 0;
+            this.currentFrame = 0;
         }
 
         //Dibuix de l'animació
         public void Draw(SpriteBatch spriteBatch)
         {
-        AOrigin = new Vector2(_animation.FrameWidth /2, _animation.FrameHeight /2);
-        spriteBatch.Draw(_animation.Texture,
+            AOrigin = new Vector2(_animation.FrameWidth / 2, _animation.FrameHeight / 2);
+            spriteBatch.Draw(_animation.Texture,
                         Position,
-                        new Rectangle(_animation.CurrentFrame * _animation.FrameWidth,
+                        new Rectangle(this.currentFrame * _animation.FrameWidth,
                                         0,
                                         _animation.FrameWidth,
                                         _animation.FrameHeight),
@@ -59,14 +61,12 @@ using Microsoft.Xna.Framework;
         {
             if (_animation == animation)
                 return;
+            this._animation = animation;
 
-            _animation = animation;
-            _animation.CurrentFrame = CurrentFrame;
-
-            if(_animation.CurrentFrame > _animation.FrameCount)
-            _animation.CurrentFrame = 0;
-
-            //_timer = 0;
+            if(this.currentFrame > _animation.FrameCount)
+            {
+               this.currentFrame = 0;
+            }
         }
 
         //Parada de l'animació
@@ -74,7 +74,7 @@ using Microsoft.Xna.Framework;
         {
             _timer = 0f;
 
-            _animation.CurrentFrame = 0;
+            this.currentFrame = 0;
         }
 
         //Actualització de cada frame en una animació
@@ -86,19 +86,19 @@ using Microsoft.Xna.Framework;
             {
                 _timer = 0f;
 
-                _animation.CurrentFrame++;
+                //this.currentFrame++;
 
-                if (_animation.CurrentFrame >= _animation.FrameCount)
-                    _animation.CurrentFrame = 0;
+                if (this.currentFrame >= _animation.FrameCount)
+                    this.currentFrame = 0;
 
-                CurrentFrame = _animation.CurrentFrame;
+                //CurrentFrame = _animation.CurrentFrame;
             }
         }
 
         //Hitbox de l'animació per ser utilitzat per la classe "Sprite"
         public Rectangle AnimationRectangle()
         {
-            return new Rectangle((int)Position.X, (int)Position.Y, (int)(_animation.FrameWidth* Ascale * AHitBoxScale), (int)(_animation.FrameHeight * Ascale * AHitBoxScale));
+            return new Rectangle((int)Position.X, (int)Position.Y, (int)(_animation.FrameWidth * Ascale * AHitBoxScale), (int)(_animation.FrameHeight * Ascale * AHitBoxScale));
+        }
     }
-    }
-
+}

@@ -20,7 +20,7 @@ using Microsoft.Xna.Framework;
         public int FrameCount { get; private set; }
 
         //Variables entorn a la reproducció de la imatge
-        public int CurrentFrame { get; set; }
+        //public int CurrentFrame { get; set; }
         public float FrameSpeed { get; set; }
         public bool IsLooping { get; set; }
         

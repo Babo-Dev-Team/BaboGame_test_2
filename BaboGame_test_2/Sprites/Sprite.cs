@@ -107,6 +107,7 @@ using Microsoft.Xna.Framework;
                 _animationManager.Aeffects = Effect;
                 _animationManager.Acolor = _color;
                 _animationManager.AHitBoxScale = HitBoxScale;
+                
                 _animationManager.Draw(spriteBatch);
             }
             else throw new Exception("No tens cap textura per aquest sprite");
