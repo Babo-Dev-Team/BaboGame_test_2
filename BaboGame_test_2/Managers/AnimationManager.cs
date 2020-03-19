@@ -86,7 +86,7 @@ namespace BaboGame_test_2
             {
                 _timer = 0f;
 
-                //this.currentFrame++;
+                this.currentFrame++;
 
                 if (this.currentFrame >= _animation.FrameCount)
                     this.currentFrame = 0;

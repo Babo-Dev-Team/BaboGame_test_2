@@ -240,6 +240,8 @@ namespace BaboGame_test_2
 
             // TODO: Add your drawing code here
             spriteBatch.Begin(SpriteSortMode.FrontToBack, null, SamplerState.LinearWrap);
+            //spriteBatch.Begin(SpriteSortMode.FrontToBack);
+
             debugger.DrawText(spriteBatch);
             foreach (var sprite in characterSprites)
             {
