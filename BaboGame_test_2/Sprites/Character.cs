@@ -36,7 +36,7 @@ namespace BaboGame_test_2
 
         }
 
-        public override void Update(GameTime gameTime, List<Sprite> sprites)
+        public void Update(GameTime gameTime, List<Character> sprites)
         {
             if (SaltPain)
                 _PainTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -47,7 +47,7 @@ namespace BaboGame_test_2
                 SaltPain = false;
             }
 
-            Move();
+            //Move();
 
             //Condicions per fer parar el personatge en cas de col·lisió
             foreach (var sprite in sprites)
@@ -94,7 +94,7 @@ namespace BaboGame_test_2
             //Funció de disparar
             if ((currentMouseState.LeftButton == ButtonState.Pressed) && (previousMouseState.LeftButton == ButtonState.Released))
             {
-                AddSalt(sprites);
+                //AddSalt(sprites);
             }
 
             //"Equació" per definir a quina capa es mostrarà el "sprite" perquè un personatge no li estigui trapitjant la cara al altre
@@ -103,6 +103,31 @@ namespace BaboGame_test_2
                 Layer = 0.4f;
             else
                 Layer = LayerValue;
+        }
+
+        public void MoveLeft()
+        {       
+            this.Velocity.X -= this.LinearVelocity;
+            //this.Position += Velocity;
+            //Velocity = Vector2.Zero;
+        }
+        public void MoveRight()
+        {
+            this.Velocity.X += this.LinearVelocity;
+            //this.Position += Velocity;
+            //Velocity = Vector2.Zero;
+        }
+        public void MoveUp()
+        {
+            this.Velocity.Y -= this.LinearVelocity;
+            //this.Position += Velocity;
+            //Velocity = Vector2.Zero;
+        }
+        public void MoveDown()
+        {
+            this.Velocity.Y += this.LinearVelocity;
+            //this.Position += Velocity;
+            //Velocity = Vector2.Zero;
         }
 
         //Funció per moure le personatge
@@ -115,7 +140,7 @@ namespace BaboGame_test_2
             currentMouseState = Mouse.GetState();
 
             //Controls del moviment del personatge
-            if (currentKey.IsKeyDown(Input.Up))
+            /*if (currentKey.IsKeyDown(Input.Up))
             {
                 Velocity.Y -= LinearVelocity;
             }
@@ -134,7 +159,7 @@ namespace BaboGame_test_2
             {
                 Velocity.X += LinearVelocity;
             }
-
+            */
             if (SaltPain)
             {
 
