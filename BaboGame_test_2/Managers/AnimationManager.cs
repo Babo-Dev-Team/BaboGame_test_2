@@ -18,6 +18,7 @@ using Microsoft.Xna.Framework;
         private Animation _animation;
         private float _timer;
         public Vector2 Position { get; set; }
+        public int CurrentFrame = 0;
 
         //Variables entorn el dibuixat de la imatge i relació amb el sprite
         public float _rotation = 0f;
@@ -59,7 +60,9 @@ using Microsoft.Xna.Framework;
                 return;
 
             _animation = animation;
+            _animation.CurrentFrame = CurrentFrame;
 
+            if(_animation.CurrentFrame > _animation.FrameCount)
             _animation.CurrentFrame = 0;
 
             _timer = 0;
@@ -86,6 +89,8 @@ using Microsoft.Xna.Framework;
 
                 if (_animation.CurrentFrame >= _animation.FrameCount)
                     _animation.CurrentFrame = 0;
+
+                CurrentFrame = _animation.CurrentFrame;
             }
         }
 
