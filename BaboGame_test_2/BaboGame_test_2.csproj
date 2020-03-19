@@ -43,6 +43,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Managers\AnimationManager.cs" />
+    <Compile Include="Managers\Debugger.cs" />
     <Compile Include="Managers\InputManager.cs" />
     <Compile Include="Models\Animation.cs" />
     <Compile Include="Models\Input.cs" />

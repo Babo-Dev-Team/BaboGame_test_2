@@ -16,6 +16,7 @@ namespace BaboGame_test_2
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+
         private List<Character> characterSprites;           // Personatges (inclòs el jugador)
         private List<Projectile> projectileSprites;         // Projectils, creats per projectileEngine
         private List<Sprite> overlaySprites;                // Sprites de la UI, de moment només la mira
@@ -159,15 +160,15 @@ namespace BaboGame_test_2
             {
                 playerChar.MoveRight();
             }
-            else if (inputManager.LeftCtrlActive())
+            if (inputManager.LeftCtrlActive())
             {
                 playerChar.MoveLeft();
             }
-            else if (inputManager.UpCtrlActive())
+            if (inputManager.UpCtrlActive())
             {
                 playerChar.MoveUp();
             }
-            else if (inputManager.DownCtrlActive())
+            if (inputManager.DownCtrlActive())
             {
                 playerChar.MoveDown();
             }
