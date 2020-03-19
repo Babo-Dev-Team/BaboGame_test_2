@@ -15,6 +15,9 @@ namespace BaboGame_test_2
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        private SpriteFont _font;
+        Debugger debugger;
+
 
 
         private List<Character> characterSprites;           // Personatges (inclòs el jugador)
@@ -129,6 +132,10 @@ namespace BaboGame_test_2
                 
             // punter que apunta al personatge controlat pel jugador
             playerChar = characterSprites.ToArray()[0];
+
+            _font = Content.Load<SpriteFont>("Font");
+            debugger = new Debugger(characterSprites, projectileSprites, overlaySprites, _font);
+            
         }
 
         /// <summary>
@@ -232,6 +239,7 @@ namespace BaboGame_test_2
 
             // TODO: Add your drawing code here
             spriteBatch.Begin(SpriteSortMode.FrontToBack);
+            debugger.DrawText(spriteBatch);
 
             foreach (var sprite in characterSprites)
             {
