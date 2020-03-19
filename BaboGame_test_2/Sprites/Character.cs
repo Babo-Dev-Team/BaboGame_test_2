@@ -97,6 +97,7 @@ namespace BaboGame_test_2
 
             //Reprodueix l'animació
             SetAnimations();
+            
             this._animationManager.Update(gameTime);
 
             //"Equació" per definir a quina capa es mostrarà el "sprite" perquè un personatge no li estigui trapitjant la cara al altre

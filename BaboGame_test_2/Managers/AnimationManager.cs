@@ -33,6 +33,7 @@ using Microsoft.Xna.Framework;
         public AnimationManager(Animation animation)
         {
             _animation = animation;
+            this._timer = 0;
         }
 
         //Dibuix de l'animació
@@ -65,7 +66,7 @@ using Microsoft.Xna.Framework;
             if(_animation.CurrentFrame > _animation.FrameCount)
             _animation.CurrentFrame = 0;
 
-            _timer = 0;
+            //_timer = 0;
         }
 
         //Parada de l'animació
