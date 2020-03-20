@@ -31,7 +31,8 @@ namespace BaboGame_test_2
             int i = 0;
             foreach (var Character in _CharacterSprite)
             {
-                spriteBatch.DrawString(_font, string.Format("Direction: {0}", VectorOps.Vector2ToDeg(Character.Direction)), new Vector2(10, fontY += 20), Color.Black);
+                spriteBatch.DrawString(_font, string.Format("Direction: {0}    Velocity: {1}", VectorOps.Vector2ToDeg(Character.Direction), Character.VelocityInform), new Vector2(10, fontY += 20), Color.Black);
+                
             }
         }
     }

@@ -61,6 +61,7 @@ namespace BaboGame_test_2
                 return;
 
             _animation = animation;
+            
 
             if(this.currentFrame > _animation.FrameCount)
             {
@@ -82,9 +83,10 @@ namespace BaboGame_test_2
         }
 
         //Actualització de cada frame en una animació
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, float FrameSpeed)
         {
             _timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            _animation.FrameSpeed = FrameSpeed;
 
             if (_timer > _animation.FrameSpeed)
             {

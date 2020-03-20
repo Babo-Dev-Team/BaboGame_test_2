@@ -40,7 +40,7 @@ namespace BaboGame_test_2
 
             //Crida i fa les animacions
             SetAnimation();
-            _animationManager.Update(gameTime);
+            _animationManager.Update(gameTime, 0.2f);
         }
 
         //Animació de pulsar el botó

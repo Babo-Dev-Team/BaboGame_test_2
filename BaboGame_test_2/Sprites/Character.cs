@@ -68,6 +68,7 @@ namespace BaboGame_test_2
         }
         private Vector2 hitDirection;
         float _PainTimer = 0f;
+        public Vector2 VelocityInform;
 
         // Detectem colisions i actualitzem posicions, timers i flags del character
         public void Update(GameTime gameTime, List<Character> characterSprites)
@@ -93,12 +94,14 @@ namespace BaboGame_test_2
             {
                 Position += Velocity;
             }
+            VelocityInform = Velocity;
             Velocity = Vector2.Zero;
 
             //Reprodueix l'animació
             SetAnimations();
-            
-            this._animationManager.Update(gameTime);
+            float Framespeed = 0.2f *4/ (4 + VectorOps.ModuloVector(VelocityInform));
+
+            this._animationManager.Update(gameTime, Framespeed);
 
             //"Equació" per definir a quina capa es mostrarà el "sprite" perquè un personatge no li estigui trapitjant la cara al altre
             float LayerValue = this.Position.Y / 10000;
@@ -124,6 +127,7 @@ namespace BaboGame_test_2
         //Apartat de les animacions
         protected virtual void SetAnimations()
         {
+
             if (isHit)
             {
                 float angle = VectorOps.Vector2ToDeg(hitDirection);

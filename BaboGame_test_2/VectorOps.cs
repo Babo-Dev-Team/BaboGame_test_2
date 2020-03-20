@@ -116,5 +116,11 @@ namespace BaboGame_test_2
             unitVector = vector / vectorNorm;
             return unitVector;
         }
+
+        public static float ModuloVector (Vector2 vector)
+        {
+            float Modulo = (float)Math.Sqrt(Math.Pow(vector.X,2) + Math.Pow(vector.Y,2));
+            return Modulo;
+        }
     }
 }
