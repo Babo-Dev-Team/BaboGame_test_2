@@ -21,7 +21,7 @@ namespace BaboGame_test_2
             float tan;
             if (vector.Y == 0)
             {
-                angle = 0;
+                    angle = 0;
             }
             else
             {
@@ -69,7 +69,10 @@ namespace BaboGame_test_2
             float tan;
             if (vector.Y == 0)
             {
-                angle = 0;
+                if (vector.X > 0)
+                    angle = 0;
+                else
+                    angle = pi;
             }
             else
             {
