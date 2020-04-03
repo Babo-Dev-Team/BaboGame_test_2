@@ -69,7 +69,7 @@ namespace BaboGame_test_2
                         if (projectile.shooterID != character.IDcharacter)
                         {
                             // notificar el dany al personatge!!!
-                            character.NotifyHit(projectile.Direction, projectile.shooterID, projectile.damage);
+                            character.NotifyHit(projectile.Direction, projectile.shooterID, projectile.damage,projectile.LinearVelocity);
                             projectile.KillProjectile();
                         }
                     }
@@ -93,6 +93,7 @@ namespace BaboGame_test_2
         public int shooterID { get; }
         public float damage { get; }
         
+        
         // constrctor per inicialitzar el projectil
         public Projectile(Vector2 origin, Vector2 target, float velocity,int shooterID, Texture2D texture, float scale, float damage)
             : base(texture)
@@ -100,7 +101,7 @@ namespace BaboGame_test_2
             this.shooterID = shooterID;
             this.origin = origin;
             this.target = target;
-            this.LinearVelocity = velocity;
+            this.LinearVelocity = VectorOps.ModuloVector(new Vector2((origin.X - target.X),(origin.Y - target.Y)))/20;
             this._texture = texture;
             this.trajectory = this.target - this.origin;
             this.Position = this.origin;

@@ -13,6 +13,7 @@ namespace BaboGame_test_2
     /*
      * Defineix el sprite del personatge que el jugador controlarà
      */
+    
 
     public class Character : Sprite
     {
@@ -67,6 +68,7 @@ namespace BaboGame_test_2
             return this.isHit;
         }
         private Vector2 hitDirection;
+        private float hitImpulse;
         float _PainTimer = 0f;
         public Vector2 VelocityInform;
 
@@ -85,8 +87,8 @@ namespace BaboGame_test_2
             // si tenim un impacte, desplaçament per impacte
             if (isHit)
             {
-                Velocity.X += LinearVelocity * hitDirection.X;
-                Velocity.Y += LinearVelocity * hitDirection.Y;
+                Velocity.X += hitImpulse * hitDirection.X/5;
+                Velocity.Y += hitImpulse * hitDirection.Y/5;
             }
             
             // si detectem colisions amb altres jugadors, no incrementem posició
@@ -188,10 +190,11 @@ namespace BaboGame_test_2
             }
         }
 
-        public void NotifyHit(Vector2 hitDirection, int shooterID, float damage)
+        public void NotifyHit(Vector2 hitDirection, int shooterID, float damage, float hitImpulse)
         {
             this.isHit = true;
             this.hitDirection = hitDirection;
+            this.hitImpulse = hitImpulse;
         }
     }
 }
