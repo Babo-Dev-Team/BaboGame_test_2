@@ -17,6 +17,7 @@ namespace BaboGame_test_2
 
     public class Character : Sprite
     {
+        public int Health = 20;
         // Constructors
         public Character(Texture2D texture)
             : base(texture)
@@ -193,6 +194,7 @@ namespace BaboGame_test_2
         public void NotifyHit(Vector2 hitDirection, int shooterID, float damage, float hitImpulse)
         {
             this.isHit = true;
+            this.Health -= 1;
             this.hitDirection = hitDirection;
             this.hitImpulse = hitImpulse;
         }

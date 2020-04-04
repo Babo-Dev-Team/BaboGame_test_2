@@ -70,6 +70,11 @@ using Microsoft.Xna.Framework;
         public int IDcharacter = 0;
         public bool IsSaltShoot = false;
 
+        //Variables relacionades amb la vida
+        public bool IsHealth = false;
+        public float heart_health = 0f;
+        public int hearthPosition;
+
         //Funció principal per definir el sprite generat
         public Sprite(Texture2D texture)
         {

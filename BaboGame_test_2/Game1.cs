@@ -26,6 +26,7 @@ namespace BaboGame_test_2
         private List<Sprite> overlaySprites;                // Sprites de la UI, de moment només la mira
 
         ProjectileEngine projectileEngine;
+        HeartManager heartManager;
         InputManager inputManager = new InputManager(Keys.W, Keys.S, Keys.A, Keys.D); // El passem ja inicialitzat als objectes
 
         Character playerChar;                               // Punter cap al character controlat pel jugador
@@ -48,6 +49,7 @@ namespace BaboGame_test_2
             base.Initialize();
             projectileSprites = new List<Projectile>();
             projectileEngine = new ProjectileEngine(projectileSprites);
+            
         }
 
         /// <summary>
@@ -88,6 +90,18 @@ namespace BaboGame_test_2
 
             };
 
+            Dictionary<string, Animation> slugHealth = new Dictionary<string, Animation>()
+            {
+                {"3/4 heart", new Animation(Content.Load<Texture2D>("Slug_status/heart-3_4"), 1) },
+                {"2/4 heart", new Animation(Content.Load<Texture2D>("Slug_status/heart-2_4"), 1) },
+                {"1/4 heart", new Animation(Content.Load<Texture2D>("Slug_status/heart-1_4"), 1) },
+                {"Empty heart", new Animation(Content.Load<Texture2D>("Slug_status/heart-empty"), 1) },
+                {"Babo down hit", new Animation(Content.Load<Texture2D>("Babo/Babo down hit"), 1) },
+                {"Heart", new Animation(Content.Load<Texture2D>("Slug_status/Heart"), 1) },
+            };
+
+
+
             var sightAnimation = new Dictionary<string, Animation>()
             {
                 {"ON", new Animation(Content.Load<Texture2D>("Sight/Sight_on"), 1) },
@@ -106,15 +120,19 @@ namespace BaboGame_test_2
                     Position = new Vector2(100,100),
                     Scale = 0.25f,
                     HitBoxScale = 0.6f,
+                    Health=20,
                     IDcharacter = 1,
+
                 },
 
+                
                  new Character(slugAnimations)
                 {
                     Position = new Vector2(300,300),
                     Scale = 0.25f,
                     HitBoxScale = 0.6f,
                     _color = Color.Silver,
+                    Health=40,
                     IDcharacter = 2,
                 },
              };
@@ -129,8 +147,14 @@ namespace BaboGame_test_2
                     SolidObject = false,
                     Layer = 1f,
                 },
+
+
             };
-                
+
+            heartManager = new HeartManager(overlaySprites);
+            heartManager.CreateHeart(1, 5, 20, slugHealth,new Vector2(100,300));
+            heartManager.CreateHeart(2, 10, 39, slugHealth,new Vector2(100,400));
+
             // punter que apunta al personatge controlat pel jugador
             playerChar = characterSprites.ToArray()[0];
             _font = Content.Load<SpriteFont>("Font");
@@ -197,13 +221,14 @@ namespace BaboGame_test_2
             foreach (var character in characterSprites.ToArray())
             {
                 character.Update(gameTime, characterSprites);
+                heartManager.UpdateHealth(character.IDcharacter, character.Health);
             }
 
             foreach (var overlay in this.overlaySprites)
             {
                 overlay.Update(gameTime, overlaySprites);
             }
-
+            
             PostUpdate();
             base.Update(gameTime);
         }

@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Managers\AnimationManager.cs" />
     <Compile Include="Managers\Debugger.cs" />
+    <Compile Include="Managers\HeartManager.cs" />
     <Compile Include="Managers\InputManager.cs" />
     <Compile Include="Models\Animation.cs" />
     <Compile Include="Models\Input.cs" />
@@ -52,6 +53,7 @@
     <Compile Include="Game1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sprites\Heart.cs" />
     <Compile Include="Sprites\SaltWeapon.cs" />
     <Compile Include="Sprites\SightWeapon.cs" />
     <Compile Include="Sprites\Sprite.cs" />
