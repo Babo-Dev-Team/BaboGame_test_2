@@ -116,7 +116,10 @@ namespace BaboGame_test_2
         {
             Vector2 unitVector;
             float vectorNorm = (float)Math.Sqrt(vector.X * vector.X + vector.Y * vector.Y);
-            unitVector = vector / vectorNorm;
+            if (vectorNorm != 0)
+                unitVector = vector / vectorNorm;
+            else
+                unitVector = new Vector2(0, 0);
             return unitVector;
         }
 

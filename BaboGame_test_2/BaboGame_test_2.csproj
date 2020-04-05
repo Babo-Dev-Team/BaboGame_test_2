@@ -49,6 +49,7 @@
     <Compile Include="Models\Animation.cs" />
     <Compile Include="Models\Input.cs" />
     <Compile Include="Projectile Engine\ProjectileEngine.cs" />
+    <Compile Include="Projectile Engine\SlimeEngine.cs" />
     <Compile Include="Sprites\Character.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Program.cs" />

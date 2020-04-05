@@ -68,6 +68,11 @@ namespace BaboGame_test_2
         {
             return this.isHit;
         }
+        // Identificar la relliscada amb les babes del contrincant
+        public bool isSlip;
+        private Vector2 _previousLinearVelocity;
+        private Vector2 _previousDirection;
+
         private Vector2 hitDirection;
         private float hitImpulse;
         float _PainTimer = 0f;
@@ -91,6 +96,14 @@ namespace BaboGame_test_2
                 Velocity.X += hitImpulse * hitDirection.X/5;
                 Velocity.Y += hitImpulse * hitDirection.Y/5;
             }
+            else if(isSlip)
+            {
+                SlugSlip();
+            }
+            else
+            {
+                SlugSlipUpdate();
+            }
             
             // si detectem colisions amb altres jugadors, no incrementem posició
             if(!this.DetectCharCollisions(characterSprites))
@@ -111,7 +124,21 @@ namespace BaboGame_test_2
             if (LayerValue > 0.4)
                 Layer = 0.4f;
             else
-                Layer = LayerValue;
+                Layer = LayerValue + 0.001f;
+        }
+
+        // Fa relliscar el llimac
+        public void SlugSlipUpdate()
+        {
+            this._previousLinearVelocity = this.Velocity;
+        }
+        public void SlugSlip()
+        {
+            
+            this.Velocity.X += this._previousLinearVelocity.X*10/15;
+            this.Velocity.Y += this._previousLinearVelocity.Y*10/15;
+            
+            this._previousLinearVelocity = this.Velocity;
         }
 
         // detectem colisions amb altres jugadors
@@ -197,6 +224,11 @@ namespace BaboGame_test_2
             this.Health -= 1;
             this.hitDirection = hitDirection;
             this.hitImpulse = hitImpulse;
+        }
+
+        public void NotifySlip()
+        {
+            this.isSlip = true;
         }
     }
 }

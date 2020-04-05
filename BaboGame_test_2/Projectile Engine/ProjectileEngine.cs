@@ -17,7 +17,7 @@ namespace BaboGame_test_2
 
         // constants per defecte dels projectils
         private const float masterProjVelocity = 15;
-        private const float masterProjScale = 0.15f;
+        private const float masterProjScale = 0.1f;
         private const float masterProjDamage = 10;
 
         // constructor de la classe, li passem la llista buida per a que la vagi omplint de projectils
@@ -94,6 +94,7 @@ namespace BaboGame_test_2
         public float damage { get; }
         
         
+        
         // constrctor per inicialitzar el projectil
         public Projectile(Vector2 origin, Vector2 target, float velocity,int shooterID, Texture2D texture, float scale, float damage)
             : base(texture)
@@ -108,9 +109,10 @@ namespace BaboGame_test_2
             this.Direction = VectorOps.UnitVector(target - origin);
             this.Scale = scale;
             this.damage = damage;
+            this.Layer = 0.01f;
             //IsSaltShoot = true;
         }
-        
+
         // Movem el projectil de forma determinada per la direcció i velocitat linial
         public void Move()
         {

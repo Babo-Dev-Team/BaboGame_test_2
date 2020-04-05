@@ -16,26 +16,32 @@ namespace BaboGame_test_2
         private List<Character> _CharacterSprite;
         private List<Projectile> _ProjectileSprite;
         private List<Sprite> _overlaySprite;
+        private List<Slime> _slimeSprites;
+        private double _timer1;
 
-        public Debugger (List<Character> CharacterSprite, List<Projectile> ProjectileSprite, List<Sprite> overlaySprite, SpriteFont font)
+        public Debugger (List<Character> CharacterSprite, List<Projectile> ProjectileSprite, List<Sprite> overlaySprite, List<Slime> slimeSprite,double timer1, SpriteFont font)
         {
             _font = font;
             _CharacterSprite = CharacterSprite;
             _ProjectileSprite = ProjectileSprite;
             _overlaySprite = overlaySprite;
+            _slimeSprites = slimeSprite;
+            _timer1 = timer1;
         }
 
         public void DrawText(SpriteBatch spriteBatch)
         {
             var fontY = 10;
-            int i = 0;
+
             foreach (var Character in _CharacterSprite)
             {
-                spriteBatch.DrawString(_font, string.Format("Direction: {0}    Velocity: {1}", VectorOps.Vector2ToDeg(Character.Direction), Character.VelocityInform), new Vector2(10, fontY += 20), Color.Black);
+                spriteBatch.DrawString(_font, string.Format("Direction: {0}    Velocity: {1}    Slipping:{2}", VectorOps.Vector2ToDeg(Character.Direction), Character.VelocityInform, Character.isSlip), new Vector2(10, fontY += 20), Color.Black);
                 
             }
 
             spriteBatch.DrawString(_font, string.Format("Mouse Position: {0}", new Vector2(Mouse.GetState().X,Mouse.GetState().Y)), new Vector2(10, fontY += 20), Color.Black);
-        }
+            spriteBatch.DrawString(_font, string.Format("SlimeTimer: {0}", _timer1), new Vector2(10, fontY += 20), Color.Black);
+        
+    }
     }
 }

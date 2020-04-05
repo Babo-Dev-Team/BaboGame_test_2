@@ -104,7 +104,7 @@ namespace BaboGame_test_2
         //Hitbox de l'animació per ser utilitzat per la classe "Sprite"
         public Rectangle AnimationRectangle()
         {
-            return new Rectangle((int)Position.X, (int)Position.Y, (int)(_animation.FrameWidth * Ascale * AHitBoxScale), (int)(_animation.FrameHeight * Ascale * AHitBoxScale));
+            return new Rectangle((int)(Position.X - AOrigin.X*AHitBoxScale*Ascale), (int)(Position.Y - AOrigin.Y * AHitBoxScale * Ascale), (int)(_animation.FrameWidth * Ascale * AHitBoxScale), (int)(_animation.FrameHeight * Ascale * AHitBoxScale));
         }
     }
 }

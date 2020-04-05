@@ -132,7 +132,7 @@ using Microsoft.Xna.Framework;
             get
             {
                 if (_texture != null)
-                    return new Rectangle((int)Position.X, (int)Position.Y, (int)(_texture.Width * Scale * HitBoxScale), (int)(_texture.Height * Scale * HitBoxScale));
+                    return new Rectangle((int)(Position.X - Origin.X * Scale), (int)(Position.Y - Origin.Y * Scale), (int)(_texture.Width * Scale * HitBoxScale), (int)(_texture.Height * Scale * HitBoxScale));
                 else
                     return _animationManager.AnimationRectangle();
             }

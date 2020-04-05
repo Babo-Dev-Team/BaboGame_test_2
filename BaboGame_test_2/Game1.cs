@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using System;
+using System.Timers;
 
 namespace BaboGame_test_2
 {
@@ -24,13 +25,20 @@ namespace BaboGame_test_2
         private List<Character> characterSprites;           // Personatges (inclòs el jugador)
         private List<Projectile> projectileSprites;         // Projectils, creats per projectileEngine
         private List<Sprite> overlaySprites;                // Sprites de la UI, de moment només la mira
+        private List<Slime> slimeSprites;                   // Babes, creats per SlimeEngine
 
         ProjectileEngine projectileEngine;
-        HeartManager heartManager;
+        SlimeEngine slimeEngine;
+        HeartManager heartManager;                          // Mecanismes de la vida
         InputManager inputManager = new InputManager(Keys.W, Keys.S, Keys.A, Keys.D); // El passem ja inicialitzat als objectes
 
         Character playerChar;                               // Punter cap al character controlat pel jugador
+        Character playerChar2;                               // Punter cap al character de provas
         Texture2D projectileTexture;                        // Textura per instanciar projectils
+        Texture2D slimeTexture;                             // Textura per instanciar les babes
+        //Temporització de les babes
+        private static System.Timers.Timer timer;
+        int SlimeTime = 0;
 
         public Game1()
         {
@@ -49,6 +57,8 @@ namespace BaboGame_test_2
             base.Initialize();
             projectileSprites = new List<Projectile>();
             projectileEngine = new ProjectileEngine(projectileSprites);
+            slimeSprites = new List<Slime>();
+            slimeEngine = new SlimeEngine(slimeSprites);
             
         }
 
@@ -111,7 +121,8 @@ namespace BaboGame_test_2
             var slugTexture = Content.Load<Texture2D>("Babo/Babo down0 s0");
             var sightTexture = Content.Load<Texture2D>("Sight/Sight_off");
 
-            projectileTexture = Content.Load<Texture2D>("Babo/Babo down hit");
+            projectileTexture = Content.Load<Texture2D>("Projectile/Salt");
+            slimeTexture = Content.Load<Texture2D>("Projectile/slime2");
 
             characterSprites = new List<Character>()
             {
@@ -157,9 +168,14 @@ namespace BaboGame_test_2
 
             // punter que apunta al personatge controlat pel jugador
             playerChar = characterSprites.ToArray()[0];
+            playerChar2 = characterSprites.ToArray()[1];
             _font = Content.Load<SpriteFont>("Font");
-            debugger = new Debugger(characterSprites,projectileSprites,overlaySprites,_font);
 
+            //timer
+            timer = new System.Timers.Timer(100);
+            timer.AutoReset = true;
+            timer.Enabled = true;
+            debugger = new Debugger(characterSprites,projectileSprites,overlaySprites,slimeSprites, timer.Interval,_font);
 
         }
 
@@ -172,6 +188,7 @@ namespace BaboGame_test_2
             // TODO: Unload any non ContentManager content here
         }
 
+        bool Slug2Direction = false;
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -205,6 +222,18 @@ namespace BaboGame_test_2
                 playerChar.MoveDown();
             }
 
+            //Actualitzem moviment del llimac de prova
+            playerChar2.Direction = VectorOps.UnitVector(inputManager.GetMousePosition() - playerChar2.Position);
+
+            if (!Slug2Direction)
+                playerChar2.MoveRight();
+            else
+                playerChar2.MoveLeft();
+            if (playerChar2.Position.X > 660)
+                Slug2Direction = true;
+            if (playerChar2.Position.X < 0)
+                Slug2Direction = false;
+
             // llançem projectils segons els inputs del jugador
             inputManager.DetectMouseClicks();
             if (inputManager.LeftMouseClick())
@@ -218,11 +247,36 @@ namespace BaboGame_test_2
             // Això hauria de moure els projectils, calcular les colisions i notificar als characters si hi ha hagut dany.
             projectileEngine.UpdateProjectiles(gameTime, characterSprites);
 
+            // Generem les babes amb una certa espera per no sobrecarregar i les instanciem al update del personatge
+            timer.Elapsed += OnTimedEvent;
+
             foreach (var character in characterSprites.ToArray())
             {
                 character.Update(gameTime, characterSprites);
                 heartManager.UpdateHealth(character.IDcharacter, character.Health);
+                if ((SlimeTime > 100) && (slimeSprites.Count < 400))
+                {
+                    slimeSprites.Add(
+                       new Slime(new Vector2(character.Position.X, character.Position.Y + 20), character.IDcharacter, slimeTexture, 0.15f)
+                       {
+                           timer = 0,
+                       }
+                       );
+                    character.isSlip = false;
+                }
             }
+
+            if ((SlimeTime > 100))
+            {              
+                foreach (var slime in slimeSprites)
+                {
+                    slime.timer++;
+                }
+                SlimeTime = 0;
+            }
+
+            //Això hauria de fer reaccionar les babes a projectils, characters i objectes de l'escenari
+            slimeEngine.UpdateSlime(gameTime, characterSprites, projectileSprites);
 
             foreach (var overlay in this.overlaySprites)
             {
@@ -253,7 +307,22 @@ namespace BaboGame_test_2
                     i--;
                 }
             }
+
+            for (int i = 0; i < slimeSprites.Count; i++)
+            {
+                if (slimeSprites[i].IsRemoved)
+                {
+                    slimeSprites.RemoveAt(i);
+                    i--;
+                }
+            }
         }
+        
+        private void OnTimedEvent(Object source, ElapsedEventArgs e)
+        {
+            SlimeTime++;
+        }
+        
 
         /// <summary>
         /// This is called when the game should draw itself.
@@ -268,6 +337,11 @@ namespace BaboGame_test_2
             //spriteBatch.Begin(SpriteSortMode.FrontToBack);
 
             debugger.DrawText(spriteBatch);
+
+            foreach (var sprite in slimeSprites)
+            {
+                sprite.Draw(spriteBatch);
+            }
             foreach (var sprite in characterSprites)
             {
                 sprite.Draw(spriteBatch);
@@ -277,7 +351,6 @@ namespace BaboGame_test_2
             {
                 sprite.Draw(spriteBatch);
             }
-
             foreach (var overlay in overlaySprites)
             {
                 overlay.Draw(spriteBatch);
