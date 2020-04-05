@@ -160,10 +160,14 @@ namespace BaboGame_test_2
 
             if (isHit)
             {
-                float angle = VectorOps.Vector2ToDeg(hitDirection);
+                float angle = VectorOps.Vector2ToDeg(Direction);
                 //Animació de ser colpejat per la salt
-                if (angle < 305 && angle > 235)
+                if (angle < 315 && angle > 225)
                     _animationManager.Play(_animations["Babo up hit"]);
+                else if (angle >= 315 || angle < 45)
+                    _animationManager.Play(_animations["Babo right hit"]);
+                else if (angle <= 225 && angle > 135)
+                    _animationManager.Play(_animations["Babo left hit"]);
                 else
                     _animationManager.Play(_animations["Babo down hit"]);
             }

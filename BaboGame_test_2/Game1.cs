@@ -97,6 +97,8 @@ namespace BaboGame_test_2
                 {"Babo left-45", new Animation(Content.Load<Texture2D>("Babo/Babo left-45"), 6) },
                 {"Babo up hit", new Animation(Content.Load<Texture2D>("Babo/Babo up hit"), 1) },
                 {"Babo down hit", new Animation(Content.Load<Texture2D>("Babo/Babo down hit"), 1) },
+                {"Babo right hit", new Animation(Content.Load<Texture2D>("Babo/Babo right hit"), 1) },
+                {"Babo left hit", new Animation(Content.Load<Texture2D>("Babo/Babo left hit"), 1) },
 
             };
 
