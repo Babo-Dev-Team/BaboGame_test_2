@@ -31,19 +31,23 @@ namespace BaboGame_test_2
         SlimeEngine slimeEngine;
         HeartManager heartManager;                          // Mecanismes de la vida
         InputManager inputManager = new InputManager(Keys.W, Keys.S, Keys.A, Keys.D); // El passem ja inicialitzat als objectes
+        KeyboardState _previousState;
 
         Character playerChar;                               // Punter cap al character controlat pel jugador
-        Character playerChar2;                               // Punter cap al character de provas
+        Character playerChar2;                               // Punter cap al character de provas-------------------------Babo prova
         Texture2D projectileTexture;                        // Textura per instanciar projectils
         Texture2D slimeTexture;                             // Textura per instanciar les babes
         //Temporització de les babes
         private static System.Timers.Timer timer;
         int SlimeTime = 0;
+        Random EnemyShoot = new Random(); //-------------------------------------Babo prova
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            graphics.PreferredBackBufferHeight = 920;
+            graphics.PreferredBackBufferWidth = 1600;
         }
 
         /// <summary>
@@ -139,7 +143,7 @@ namespace BaboGame_test_2
                 },
 
                 
-                 new Character(slugAnimations)
+                 new Character(slugAnimations) //---------------------- Babo prova
                 {
                     Position = new Vector2(300,300),
                     Scale = 0.25f,
@@ -166,18 +170,18 @@ namespace BaboGame_test_2
 
             heartManager = new HeartManager(overlaySprites);
             heartManager.CreateHeart(1, 5, 20, slugHealth,new Vector2(100,300));
-            heartManager.CreateHeart(2, 10, 39, slugHealth,new Vector2(100,400));
+            heartManager.CreateHeart(2, 10, 39, slugHealth,new Vector2(100,400)); //--------------------- Babo prova
 
             // punter que apunta al personatge controlat pel jugador
             playerChar = characterSprites.ToArray()[0];
-            playerChar2 = characterSprites.ToArray()[1];
+            playerChar2 = characterSprites.ToArray()[1]; //------------------------- Babo prova
             _font = Content.Load<SpriteFont>("Font");
 
             //timer
-            timer = new System.Timers.Timer(100);
+            timer = new System.Timers.Timer(60);
             timer.AutoReset = true;
             timer.Enabled = true;
-            debugger = new Debugger(characterSprites,projectileSprites,overlaySprites,slimeSprites, timer.Interval,_font);
+            debugger = new Debugger(characterSprites,projectileSprites,overlaySprites,slimeSprites, timer.Interval,graphics.PreferredBackBufferWidth,graphics.PreferredBackBufferHeight,_font);
 
         }
 
@@ -190,7 +194,8 @@ namespace BaboGame_test_2
             // TODO: Unload any non ContentManager content here
         }
 
-        bool Slug2Direction = false;
+        bool Slug2Direction = false; //--------------------------------------- Babo prova
+        bool Slug2Direction2 = false;
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -200,9 +205,12 @@ namespace BaboGame_test_2
         {
            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                Exit();
+            if (Keyboard.GetState().IsKeyDown(Keys.F11) && (_previousState.IsKeyUp(Keys.F11)))
+                graphics.ToggleFullScreen();
 
             // Detectem inputs al teclat
             inputManager.detectKeysPressed();
+            _previousState = Keyboard.GetState();
 
             // Actualitzem direcció i moviment del playerChar segons els inputs
             playerChar.Direction = VectorOps.UnitVector(inputManager.GetMousePosition() - playerChar.Position);
@@ -224,17 +232,28 @@ namespace BaboGame_test_2
                 playerChar.MoveDown();
             }
 
-            //Actualitzem moviment del llimac de prova
-            playerChar2.Direction = VectorOps.UnitVector(inputManager.GetMousePosition() - playerChar2.Position);
+            //Actualitzem moviment del llimac de prova ---------------------Babo prova
+            playerChar2.Direction = VectorOps.UnitVector(playerChar.Position - playerChar2.Position);
 
             if (!Slug2Direction)
                 playerChar2.MoveRight();
             else
                 playerChar2.MoveLeft();
-            if (playerChar2.Position.X > 660)
+            if (Slug2Direction2)
+                playerChar2.MoveUp();
+            else
+                playerChar2.MoveDown();
+
+            if (playerChar2.Position.X > graphics.PreferredBackBufferWidth)
                 Slug2Direction = true;
-            if (playerChar2.Position.X < 0)
+            else if (playerChar2.Position.X < 0)
                 Slug2Direction = false;
+
+            if (playerChar2.Position.Y > graphics.PreferredBackBufferHeight)
+                Slug2Direction2 = true;
+            else if (playerChar2.Position.Y < 0)
+                Slug2Direction2 = false;
+
 
             // llançem projectils segons els inputs del jugador
             inputManager.DetectMouseClicks();
@@ -245,6 +264,9 @@ namespace BaboGame_test_2
                 int shooterID = 1; // caldrà gestionar els ID's des del server
                 projectileEngine.AddProjectile(projOrigin, projTarget, projectileTexture, shooterID);
             }
+            
+            if (EnemyShoot.Next(0,32) == 0) //--------------------------- Babo prova
+                projectileEngine.AddProjectile(playerChar2.Position, playerChar.Position, projectileTexture, 2);
 
             // Això hauria de moure els projectils, calcular les colisions i notificar als characters si hi ha hagut dany.
             projectileEngine.UpdateProjectiles(gameTime, characterSprites);

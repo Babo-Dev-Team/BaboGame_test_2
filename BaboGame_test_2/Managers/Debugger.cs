@@ -18,8 +18,9 @@ namespace BaboGame_test_2
         private List<Sprite> _overlaySprite;
         private List<Slime> _slimeSprites;
         private double _timer1;
+        private int heightscreen, widthscreen;
 
-        public Debugger (List<Character> CharacterSprite, List<Projectile> ProjectileSprite, List<Sprite> overlaySprite, List<Slime> slimeSprite,double timer1, SpriteFont font)
+        public Debugger (List<Character> CharacterSprite, List<Projectile> ProjectileSprite, List<Sprite> overlaySprite, List<Slime> slimeSprite,double timer1,int widthscreen,int heightscreen, SpriteFont font)
         {
             _font = font;
             _CharacterSprite = CharacterSprite;
@@ -27,6 +28,8 @@ namespace BaboGame_test_2
             _overlaySprite = overlaySprite;
             _slimeSprites = slimeSprite;
             _timer1 = timer1;
+            this.heightscreen = heightscreen;
+            this.widthscreen = widthscreen;
         }
 
         public void DrawText(SpriteBatch spriteBatch)
@@ -41,6 +44,7 @@ namespace BaboGame_test_2
 
             spriteBatch.DrawString(_font, string.Format("Mouse Position: {0}", new Vector2(Mouse.GetState().X,Mouse.GetState().Y)), new Vector2(10, fontY += 20), Color.Black);
             spriteBatch.DrawString(_font, string.Format("SlimeTimer: {0}", _timer1), new Vector2(10, fontY += 20), Color.Black);
+            spriteBatch.DrawString(_font, string.Format("Screen Dimensions: {0}", new Vector2(widthscreen, heightscreen)), new Vector2(10, fontY += 20), Color.Black);
         
     }
     }

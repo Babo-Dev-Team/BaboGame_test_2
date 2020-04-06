@@ -48,7 +48,7 @@ namespace BaboGame_test_2
 
                 if ((slime.timer > 20) && (!slime.IsSalted))
                     slime.KillSlime();
-                else if (slime.timer > 50)
+                else if (slime.timer > 200)
                     slime.KillSlime();
 
                 slime.Layer = 0.001f - slime.timer * 0.00001f; 
