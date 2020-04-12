@@ -32,13 +32,13 @@ namespace BaboGame_test_2
                 {
                     foreach (var projectile in projectileList)
                     {
-                        if (slime.DetectCollision(projectile) && (slime.IsNear(projectile.target)) && (!slime.IsSalted))
+                        if (slime.DetectCollision(projectile) && (slime.IsNear(projectile.Target)) && (!slime.IsSalted))
                             slime.IsSalted = true;
                     }
 
                     foreach (var character in characterList)
                     {
-                    if (slime.DetectCollision(character) && (slime.shooterID != character.IDcharacter))
+                    if (slime.DetectCollision(character) && (slime.ShooterID != character.IDcharacter))
                         character.NotifySlip();
                             
                     }
@@ -64,7 +64,7 @@ namespace BaboGame_test_2
         // ATRIBUTS
         public int timer=0;
         private Vector2 origin;
-        public int shooterID { get; }
+        public int ShooterID { get; }
         public bool IsSalted;
         private float radiumSlime = 10f;
 
@@ -72,7 +72,7 @@ namespace BaboGame_test_2
         public Slime(Vector2 origin, int shooterID, Texture2D texture, float scale)
             : base(texture)
         {
-            this.shooterID = shooterID;
+            this.ShooterID = shooterID;
             this.origin = origin;
             this.LinearVelocity = 0f;
             this._texture = texture;

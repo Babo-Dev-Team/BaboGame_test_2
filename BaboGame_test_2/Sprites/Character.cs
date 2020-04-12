@@ -156,7 +156,7 @@ namespace BaboGame_test_2
             if (LayerValue > 0.4)
                 Layer = 0.4f;
             else
-                Layer = LayerValue + 0.001f;
+                Layer = LayerValue + 0.01f;
         }
 
         /*
@@ -265,7 +265,15 @@ namespace BaboGame_test_2
                 }
             }
         }
-
+        private bool DetectObjCollisions(List<ScenarioObjects> ObjectSprites)
+        {
+            bool collisionDetected = false;
+            foreach (var Object in ObjectSprites)
+                    collisionDetected = this.IsTouchingBottom(Object) || this.IsTouchingLeft(Object)
+                                      || this.IsTouchingRight(Object) || this.IsTouchingTop(Object);
+                
+            return collisionDetected;
+        }
 
         //Apartat de les animacions
         protected virtual void SetAnimations()

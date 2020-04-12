@@ -28,21 +28,21 @@ namespace BaboGame_test_2
         }
 
         // afegim un projectil a la llista, inicialitzant-lo amb posicio origen i final i una velocitat de moment estàndard
-        public void AddProjectile(Vector2 origin, Vector2 target, Texture2D projectileTexture, int shooterID)
+        public void AddProjectile(Vector2 origin, Vector2 target, Texture2D projectileTexture, int shooterID, char projectileType)
         {
-            projectileList.Add(new Projectile(origin, target, masterProjVelocity, shooterID, projectileTexture, masterProjScale, masterProjDamage));
+            projectileList.Add(new Projectile(origin, target, masterProjVelocity, shooterID, projectileTexture, masterProjScale, masterProjDamage, projectileType));
         }
 
         // afegim un projectil amb velocitat configurable
-        public void AddProjectile(Vector2 origin, Vector2 target, float velocity, Texture2D projectileTexture, int shooterID)
+        public void AddProjectile(Vector2 origin, Vector2 target, float velocity, Texture2D projectileTexture, int shooterID, char projectileType)
         {
-            projectileList.Add(new Projectile(origin, target, velocity, shooterID, projectileTexture, masterProjScale, masterProjDamage));
+            projectileList.Add(new Projectile(origin, target, velocity, shooterID, projectileTexture, masterProjScale, masterProjDamage, projectileType));
         }
 
         // aquí estarà la gràcia. En comptes d'actualitzar-los un per un a cada objecte, agafarem
         // tota la llista i calcularem tots els moviments i colisions.
         // caldrà fer saber als characters que han colisionat que tenen dany + la direcció de l'impacte.
-        public void UpdateProjectiles(GameTime gameTime, List<Character> characterList)
+        public void UpdateProjectiles(GameTime gameTime, List<Character> characterList, List<ScenarioObjects> objectsList)
         {
             //Valorar el temps de vida de la sal a disparar i la eliminació d'aquest
             /* _timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -54,26 +54,12 @@ namespace BaboGame_test_2
             
             foreach (var projectile in this.projectileList)
             {
-                //Definir la posició final de la sal per ser eliminada
-                if (((projectile.target.X >= projectile.Position.X - 10) && (projectile.target.X <= projectile.Position.X + 10)) &&
-                    ((projectile.target.Y >= projectile.Position.Y - 10) && (projectile.target.Y <= projectile.Position.Y + 10)))
-                {
-                    projectile.KillProjectile();
-                }
-
-                //Definir la colisió de la sal
-                foreach (var character in characterList)
-                {
-                    if (projectile.DetectCollision(character))
-                    {
-                        if (projectile.shooterID != character.IDcharacter)
-                        {
-                            // notificar el dany al personatge!!!
-                            character.NotifyHit(projectile.Direction, projectile.shooterID, projectile.damage,projectile.LinearVelocity);
-                            projectile.KillProjectile();
-                        }
-                    }
-                }
+                if (projectile.ProjectileType == 'D') //Sal directe
+                    DirectSaltUpdate(characterList, objectsList, projectile);
+                else if (projectile.ProjectileType == 'S') //Slimed Salt
+                    SlimedSaltUpdate(characterList,objectsList, projectile);
+                else
+                    NormalSaltUpdate(characterList, objectsList, projectile);
 
                 if(!projectile.IsRemoved)
                 {
@@ -81,34 +67,150 @@ namespace BaboGame_test_2
                 }
             }
         }
+
+        // Mecànica de la sal normal
+        private void NormalSaltUpdate(List<Character> characterList, List<ScenarioObjects> objectsList, Projectile projectile)
+        {
+            //Definir la posició final de la sal per ser eliminada
+            if (((projectile.Target.X >= projectile.Position.X - 10) && (projectile.Target.X <= projectile.Position.X + 10)) &&
+                ((projectile.Target.Y >= projectile.Position.Y - 10) && (projectile.Target.Y <= projectile.Position.Y + 10)))
+            {
+                projectile.KillProjectile();
+            }
+
+            //Definir la colisió de la sal
+            foreach (var character in characterList)
+            {
+                if (projectile.DetectCollision(character))
+                {
+                    if (projectile.ShooterID != character.IDcharacter)
+                    {
+                        // notificar el dany al personatge!!!
+                        character.NotifyHit(projectile.Direction, projectile.ShooterID, projectile.Damage, projectile.LinearVelocity);
+                        projectile.KillProjectile();
+                    }
+                }
+            }
+
+            foreach (var Object in objectsList)
+            {
+                if (projectile.DetectCollision(Object))
+                {
+                    projectile.KillProjectile();
+                }
+            }
+        }
+
+        // Mecànica de la sal directe
+        private void DirectSaltUpdate(List<Character> characterList, List<ScenarioObjects> objectsList, Projectile projectile)
+        {
+            //Elimina la sal en un límit de distancia
+            if (VectorOps.ModuloVector(projectile.Origin - projectile.Position) > 2000)
+                projectile.KillProjectile();
+
+            //Definir la colisió de la sal
+            foreach (var character in characterList)
+            {
+                if (projectile.DetectCollision(character))
+                {
+                    if (projectile.ShooterID != character.IDcharacter)
+                    {
+                        // notificar el dany al personatge!!!
+                        character.NotifyHit(projectile.Direction, projectile.ShooterID, projectile.Damage, projectile.LinearVelocity);
+                        projectile.KillProjectile();
+                    }
+                }
+            }
+
+            foreach (var Object in objectsList)
+            {
+                if (projectile.DetectCollision(Object))
+                {
+                    projectile.KillProjectile();
+                }
+            }
+        }
+
+        // Mecànica de la sal no neutoniana
+        private void SlimedSaltUpdate(List<Character> characterList, List<ScenarioObjects> objectsList, Projectile projectile)
+        {
+            //Elimina la sal en un límit de distancia
+            if (VectorOps.ModuloVector(projectile.Origin - projectile.Position) > 2000)
+                projectile.KillProjectile();
+
+            //Definir la colisió de la sal
+            foreach (var character in characterList)
+            {
+                if (projectile.DetectCollision(character))
+                {
+                    if (projectile.ShooterID != character.IDcharacter)
+                    {
+                        // notificar el dany al personatge!!!
+                        character.NotifyHit(projectile.Direction, projectile.ShooterID, projectile.Damage, projectile.LinearVelocity);
+                        projectile.KillProjectile();
+                    }
+                }
+            }
+
+            foreach (var Object in objectsList)
+            {
+                if (projectile.DetectBottomCollision(Object))
+                {
+                    projectile.Direction.Y = Math.Abs(projectile.Direction.Y);
+                    projectile.HitCount++;
+                }
+
+                if (projectile.DetectTopCollision(Object))
+                {
+                    projectile.Direction.Y = -Math.Abs(projectile.Direction.Y);
+                    projectile.HitCount++;
+                }
+
+                if (projectile.DetectRightCollision(Object))
+                {
+                    projectile.Direction.X = Math.Abs(projectile.Direction.X);
+                    projectile.HitCount++;
+                }
+                if (projectile.DetectLeftCollision(Object))
+                {
+                    projectile.Direction.X = -Math.Abs(projectile.Direction.X);
+                    projectile.HitCount++;
+                }
+            }
+
+            if (projectile.HitCount > 10)
+                projectile.KillProjectile();
+        }
     }
 
     public class Projectile : Sprite
     {
         // ATRIBUTS
-        private float timer;
-        public Vector2 target { get; }
+        public Vector2 Target { get; }
         private Vector2 origin;
         private Vector2 trajectory;
-        public int shooterID { get; }
-        public float damage { get; }
+        public int ShooterID { get; }
+        public float Damage { get; }
+        public char ProjectileType = 'N'; //N de Normal, D de directe i S de noNewtonian Slimed Salt
+        public int HitCount = 0;
         
         
         
         // constrctor per inicialitzar el projectil
-        public Projectile(Vector2 origin, Vector2 target, float velocity,int shooterID, Texture2D texture, float scale, float damage)
+        public Projectile(Vector2 origin, Vector2 target, float velocity,int shooterID, Texture2D texture, float scale, float damage, char projectileType)
             : base(texture)
         {
-            this.shooterID = shooterID;
+            this.ShooterID = shooterID;
             this.origin = origin;
-            this.target = target;
+            this.Target = target;
             this.LinearVelocity = VectorOps.ModuloVector(new Vector2((origin.X - target.X),(origin.Y - target.Y)))/20;
             this._texture = texture;
-            this.trajectory = this.target - this.origin;
+            this.ProjectileType = projectileType;
+            this.trajectory = this.Target - this.origin;
             this.Position = this.origin;
             this.Direction = VectorOps.UnitVector(target - origin);
             this.Scale = scale;
-            this.damage = damage;
+            this.Damage = damage;
             this.Layer = 0.01f;
             //IsSaltShoot = true;
         }
@@ -119,10 +221,13 @@ namespace BaboGame_test_2
             this.Position += this.Direction * LinearVelocity;
 
             //Funcionament de canvi d'escala de la sal per donar la sensació d'un moviment parabòlic
-            if ((Math.Abs(Position.X - origin.X) < Math.Abs(trajectory.X / 2)) && (Math.Abs(Position.Y - origin.Y) < Math.Abs(trajectory.Y / 2)))
-                this.Scale += 0.003f;
-            else
-                this.Scale -= 0.003f;
+            if (ProjectileType == 'N')
+            {
+                if ((Math.Abs(Position.X - origin.X) < Math.Abs(trajectory.X / 2)) && (Math.Abs(Position.Y - origin.Y) < Math.Abs(trajectory.Y / 2)))
+                    this.Scale += 0.003f;
+                else
+                    this.Scale -= 0.003f;
+            }
         }
 
         // Marquem el projectil per la seva eliminació
@@ -137,6 +242,42 @@ namespace BaboGame_test_2
             if(sprite != this)
             {
                 return this.IsTouchingBottom(sprite) || this.IsTouchingLeft(sprite) || this.IsTouchingRight(sprite) || this.IsTouchingTop(sprite);
+            }
+            else
+                return false;
+        }
+        public bool DetectBottomCollision(Sprite sprite)
+        {
+            if (sprite != this)
+            {
+                return this.IsTouchingBottom(sprite);
+            }
+            else
+                return false;
+        }
+        public bool DetectTopCollision(Sprite sprite)
+        {
+            if (sprite != this)
+            {
+                return this.IsTouchingTop(sprite);
+            }
+            else
+                return false;
+        }
+        public bool DetectRightCollision(Sprite sprite)
+        {
+            if (sprite != this)
+            {
+                return this.IsTouchingRight(sprite);
+            }
+            else
+                return false;
+        }
+        public bool DetectLeftCollision(Sprite sprite)
+        {
+            if (sprite != this)
+            {
+                return this.IsTouchingLeft(sprite);
             }
             else
                 return false;

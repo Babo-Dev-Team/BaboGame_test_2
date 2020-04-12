@@ -536,6 +536,30 @@
 /processorParam:TextureFormat=Compressed
 /build:Font.spritefont
 
+#begin Projectile/DirectSalt.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Projectile/DirectSalt.png
+
+#begin Projectile/NoNewtonianSlimedSalt.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Projectile/NoNewtonianSlimedSalt.png
+
 #begin Projectile/Salt.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -559,6 +583,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Projectile/slime2.png
+
+#begin Scenario/Block.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Scenario/Block.png
 
 #begin Sight/Sight_off.png
 /importer:TextureImporter

@@ -26,8 +26,10 @@ namespace BaboGame_test_2
         private List<Projectile> projectileSprites;         // Projectils, creats per projectileEngine
         private List<Sprite> overlaySprites;                // Sprites de la UI, de moment només la mira
         private List<Slime> slimeSprites;                   // Babes, creats per SlimeEngine
+        private List<ScenarioObjects> scenarioSprites;      // Sprites per objectes sòlids que estiguin per pantalla
 
         ProjectileEngine projectileEngine;
+        Dictionary<string, Texture2D> projectileTexture;
         SlimeEngine slimeEngine;
         HeartManager heartManager;                          // Mecanismes de la vida
         InputManager inputManager = new InputManager(Keys.W, Keys.S, Keys.A, Keys.D); // El passem ja inicialitzat als objectes
@@ -35,10 +37,9 @@ namespace BaboGame_test_2
 
         Character playerChar;                               // Punter cap al character controlat pel jugador
         Character playerChar2;                               // Punter cap al character de provas-------------------------Babo prova
-        Texture2D projectileTexture;                        // Textura per instanciar projectils
         Texture2D slimeTexture;                             // Textura per instanciar les babes
         //Temporització de les babes
-        private static System.Timers.Timer timer;
+        private static Timer timer;
         int SlimeTime = 0;
         Random EnemyShoot = new Random(); //-------------------------------------Babo prova
 
@@ -118,7 +119,7 @@ namespace BaboGame_test_2
 
 
 
-            var sightAnimation = new Dictionary<string, Animation>()
+            Dictionary<string, Animation> sightAnimation = new Dictionary<string, Animation>()
             {
                 {"ON", new Animation(Content.Load<Texture2D>("Sight/Sight_on"), 1) },
                 {"OFF", new Animation(Content.Load<Texture2D>("Sight/Sight_off"), 1) },
@@ -126,8 +127,15 @@ namespace BaboGame_test_2
 
             var slugTexture = Content.Load<Texture2D>("Babo/Babo down0 s0");
             var sightTexture = Content.Load<Texture2D>("Sight/Sight_off");
+            var scenarioTexture = Content.Load<Texture2D>("Scenario/Block");
 
-            projectileTexture = Content.Load<Texture2D>("Projectile/Salt");
+            projectileTexture = new Dictionary<string, Texture2D>()
+            {
+                {"Normal", Content.Load<Texture2D>("Projectile/Salt")},
+                {"Direct", Content.Load<Texture2D>("Projectile/DirectSalt")},
+                {"Slimed", Content.Load<Texture2D>("Projectile/NoNewtonianSlimedSalt")},
+            };
+            
             slimeTexture = Content.Load<Texture2D>("Projectile/slime2");
 
             characterSprites = new List<Character>()
@@ -168,6 +176,16 @@ namespace BaboGame_test_2
 
             };
 
+            scenarioSprites = new List<ScenarioObjects>()
+            {
+                new ScenarioObjects(scenarioTexture)
+                {
+                    Position = new Vector2(400,100),
+                    Scale = 0.2f,
+                    SolidObject = true,
+                },
+            };
+
             heartManager = new HeartManager(overlaySprites);
             heartManager.CreateHeart(1, 5, 20, slugHealth,new Vector2(100,300));
             heartManager.CreateHeart(2, 10, 39, slugHealth,new Vector2(100,400)); //--------------------- Babo prova
@@ -178,7 +196,7 @@ namespace BaboGame_test_2
             _font = Content.Load<SpriteFont>("Font");
 
             //timer
-            timer = new System.Timers.Timer(60);
+            timer = new Timer(60);
             timer.AutoReset = true;
             timer.Enabled = true;
             debugger = new Debugger(characterSprites,projectileSprites,overlaySprites,slimeSprites, timer.Interval,graphics.PreferredBackBufferWidth,graphics.PreferredBackBufferHeight,_font);
@@ -261,14 +279,20 @@ namespace BaboGame_test_2
                 Vector2 projOrigin = playerChar.Position;
                 Vector2 projTarget = inputManager.GetMousePosition();
                 int shooterID = 1; // caldrà gestionar els ID's des del server
-                projectileEngine.AddProjectile(projOrigin, projTarget, projectileTexture, shooterID);
+                projectileEngine.AddProjectile(projOrigin, projTarget, projectileTexture["Normal"], shooterID, 'N');
             }
-            
+
             //if (EnemyShoot.Next(0,32) == 0) //--------------------------- Babo prova
-                //projectileEngine.AddProjectile(playerChar2.Position, playerChar.Position, projectileTexture, 2);
+            //projectileEngine.AddProjectile(playerChar2.Position, playerChar.Position, projectileTexture, 2);
+
+            //Això actualitzaria els objectes del escenari
+            foreach (var ScenarioObj in scenarioSprites)
+            {
+                ScenarioObj.Update(gameTime);
+            }
 
             // Això hauria de moure els projectils, calcular les colisions i notificar als characters si hi ha hagut dany.
-            projectileEngine.UpdateProjectiles(gameTime, characterSprites);
+            projectileEngine.UpdateProjectiles(gameTime, characterSprites, scenarioSprites);
 
             // Generem les babes amb una certa espera per no sobrecarregar i les instanciem al update del personatge
             timer.Elapsed += OnTimedEvent;
@@ -361,6 +385,10 @@ namespace BaboGame_test_2
 
             debugger.DrawText(spriteBatch);
 
+            foreach (var sprite in scenarioSprites)
+            {
+                sprite.Draw(spriteBatch);
+            }
             foreach (var sprite in slimeSprites)
             {
                 sprite.Draw(spriteBatch);
