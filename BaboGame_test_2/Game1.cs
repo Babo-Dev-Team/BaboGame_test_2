@@ -231,7 +231,7 @@ namespace BaboGame_test_2
             {
                 playerChar.MoveDown();
             }
-
+            
             //Actualitzem moviment del llimac de prova ---------------------Babo prova
             playerChar2.Direction = VectorOps.UnitVector(playerChar.Position - playerChar2.Position);
 
@@ -244,16 +244,15 @@ namespace BaboGame_test_2
             else
                 playerChar2.MoveDown();
 
-            if (playerChar2.Position.X > graphics.PreferredBackBufferWidth)
+            if ((playerChar2.Position.X > graphics.PreferredBackBufferWidth))
                 Slug2Direction = true;
             else if (playerChar2.Position.X < 0)
                 Slug2Direction = false;
-
+               
             if (playerChar2.Position.Y > graphics.PreferredBackBufferHeight)
                 Slug2Direction2 = true;
             else if (playerChar2.Position.Y < 0)
                 Slug2Direction2 = false;
-
 
             // llançem projectils segons els inputs del jugador
             inputManager.DetectMouseClicks();
@@ -265,8 +264,8 @@ namespace BaboGame_test_2
                 projectileEngine.AddProjectile(projOrigin, projTarget, projectileTexture, shooterID);
             }
             
-            if (EnemyShoot.Next(0,32) == 0) //--------------------------- Babo prova
-                projectileEngine.AddProjectile(playerChar2.Position, playerChar.Position, projectileTexture, 2);
+            //if (EnemyShoot.Next(0,32) == 0) //--------------------------- Babo prova
+                //projectileEngine.AddProjectile(playerChar2.Position, playerChar.Position, projectileTexture, 2);
 
             // Això hauria de moure els projectils, calcular les colisions i notificar als characters si hi ha hagut dany.
             projectileEngine.UpdateProjectiles(gameTime, characterSprites);

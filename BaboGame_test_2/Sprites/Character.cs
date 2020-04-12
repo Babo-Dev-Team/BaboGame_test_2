@@ -18,6 +18,15 @@ namespace BaboGame_test_2
     public class Character : Sprite
     {
         public int Health = 20;
+
+        //Nous valors, farem les físiques dels llimacs més físicament realistes per millorar les mecàniques dels Babos
+        public float Weight = 10; 
+        public Vector2 Acceleration = new Vector2(0,0); 
+        public float LinearAcceleration = 2f;
+        public Vector2 Force = new Vector2(0,0);
+        private float Friction = 1f;
+        private float Velocity_Threshold = 12f;
+
         // Constructors
         public Character(Texture2D texture)
             : base(texture)
@@ -36,28 +45,44 @@ namespace BaboGame_test_2
         {
             if (!isHit)
             {
-                this.Velocity.X -= this.LinearVelocity;
+                //this.Velocity.X -= this.LinearVelocity;
+                if(!isSlip)
+                    this.Acceleration.X -= this.LinearAcceleration;
+                else
+                    this.Acceleration.X -= this.LinearAcceleration/4;
             }
         }
         public void MoveRight()
         {
             if (!isHit)
             {
-                this.Velocity.X += this.LinearVelocity;
+                //this.Velocity.X += this.LinearVelocity;
+                if(!isSlip)
+                    this.Acceleration.X += this.LinearAcceleration;
+                else
+                    this.Acceleration.X += this.LinearAcceleration/4;
             }
         }
         public void MoveUp()
         {
             if (!isHit)
             {
-                this.Velocity.Y -= this.LinearVelocity;
+                //this.Velocity.Y -= this.LinearVelocity;
+                if(!isSlip)
+                    this.Acceleration.Y -= this.LinearAcceleration;
+                else
+                    this.Acceleration.Y -= this.LinearAcceleration/4;
             }
         }
         public void MoveDown()
         {
             if (!isHit)
             {
-                this.Velocity.Y += this.LinearVelocity;
+                //this.Velocity.Y += this.LinearVelocity;
+                if(!isSlip)
+                    this.Acceleration.Y += this.LinearAcceleration;
+                else
+                    this.Acceleration.Y += this.LinearAcceleration/4;
             }
         }
 
@@ -70,8 +95,8 @@ namespace BaboGame_test_2
         }
         // Identificar la relliscada amb les babes del contrincant
         public bool isSlip;
-        private Vector2 _previousLinearVelocity;
-        private Vector2 _previousDirection;
+        //private Vector2 _previousLinearVelocity;
+        //private Vector2 _previousDirection;
 
         private Vector2 hitDirection;
         private float hitImpulse;
@@ -93,25 +118,32 @@ namespace BaboGame_test_2
             // si tenim un impacte, desplaçament per impacte
             if (isHit)
             {
+                Velocity = Vector2.Zero; //Per compensar la cancelació de la velocitat la posaré abans d'agafar la direcció del cop
                 Velocity.X += hitImpulse * hitDirection.X/5;
                 Velocity.Y += hitImpulse * hitDirection.Y/5;
-            }
-            else if(isSlip)
-            {
-                SlugSlip();
             }
             else
             {
                 SlugSlipUpdate();
+                UpdateFriction();
+                UpdateForce();
+                UpdateVelocity();
             }
             
             // si detectem colisions amb altres jugadors, no incrementem posició
-            if(!this.DetectCharCollisions(characterSprites))
+            if((!this.DetectCharCollisions(characterSprites)))
             {
                 Position += Velocity;
             }
+            else
+            {
+                //SoftCollision(characterSprites);
+                UpdateCharCollision(characterSprites);
+                Position += Velocity;
+            }
             VelocityInform = Velocity;
-            Velocity = Vector2.Zero;
+            //Velocity = Vector2.Zero; -- Ara la velocitat es conservarà
+            Acceleration = Vector2.Zero;
 
             //Reprodueix l'animació
             SetAnimations();
@@ -127,6 +159,7 @@ namespace BaboGame_test_2
                 Layer = LayerValue + 0.001f;
         }
 
+        /*
         // Fa relliscar el llimac
         public void SlugSlipUpdate()
         {
@@ -140,7 +173,7 @@ namespace BaboGame_test_2
             
             this._previousLinearVelocity = this.Velocity;
         }
-
+        */
         // detectem colisions amb altres jugadors
         public bool DetectCharCollisions(List<Character> charSprites)
         {
@@ -153,6 +186,86 @@ namespace BaboGame_test_2
             }
             return collisionDetected;
         }
+
+        /*
+        // fem una colisió més permisiva per no encallar els personatges
+        public void SoftCollision(List<Character> charSprites)
+        {
+            bool sameDirection = true;
+            Vector2 charVelocity = Vector2.Zero;
+            int charnumber = 0;
+            foreach (var character in charSprites)
+            if (character != this)
+            {
+                if(this.IsTouchingBottom(character) || this.IsTouchingLeft(character) 
+                                || this.IsTouchingRight(character) || this.IsTouchingTop(character))
+                {
+                    if(!((VectorOps.Vector2ToDeg(character.Velocity) > (VectorOps.Vector2ToDeg(Velocity) - 45))&&
+                            (VectorOps.Vector2ToDeg(character.Velocity) < (VectorOps.Vector2ToDeg(Velocity) + 45))))
+                            {
+                                sameDirection = false;
+                            }
+                    charVelocity += character.Velocity;
+                    charnumber++;
+
+                }
+
+            }
+            if(sameDirection)
+                Position += Velocity/2;
+            else if ((charnumber > 0))
+                Position += charVelocity/(8*charnumber);
+               
+        }
+        */
+
+        //------------------------------------------- Funcions per les noves mecàniques -----------------------------------------------
+        public void UpdateForce()
+        {
+            Force = Acceleration*Weight;
+        }
+        public void UpdateVelocity()
+        {
+            Velocity += Acceleration;
+            if(VectorOps.ModuloVector(Velocity) > Velocity_Threshold)
+                Velocity = VectorOps.UnitVector(Velocity)*Velocity_Threshold;
+        }
+        public void UpdateFriction()
+        {
+            float VelocityModulo = VectorOps.ModuloVector(Velocity);
+            VelocityModulo -= Friction;
+            if (VelocityModulo > 0)
+                Velocity = VectorOps.UnitVector(Velocity)*VelocityModulo;
+            else
+                Velocity = Vector2.Zero;
+        }
+        public void SlugSlipUpdate()
+        {
+            if(isSlip)
+                Friction = 0.01f;
+            else
+                Friction = 1f;
+        }
+        public void UpdateCharCollision(List<Character> charSprites)
+        {
+            foreach (var character in charSprites)
+            {
+                if(character != this)
+                {
+                    if(this.IsTouchingBottom(character) || this.IsTouchingTop(character))
+                    {
+                        Velocity.Y = character.Force.Y/character.Weight;
+                        
+                    }
+                    if (this.IsTouchingLeft(character) || this.IsTouchingRight(character))
+                    {
+                        Velocity.X = character.Force.X/character.Weight;
+                        
+                    }
+                }
+            }
+        }
+
 
         //Apartat de les animacions
         protected virtual void SetAnimations()
