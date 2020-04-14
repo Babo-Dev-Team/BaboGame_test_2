@@ -72,8 +72,8 @@ namespace BaboGame_test_2
         private void NormalSaltUpdate(List<Character> characterList, List<ScenarioObjects> objectsList, Projectile projectile)
         {
             //Definir la posició final de la sal per ser eliminada
-            if (((projectile.Target.X >= projectile.Position.X - 10) && (projectile.Target.X <= projectile.Position.X + 10)) &&
-                ((projectile.Target.Y >= projectile.Position.Y - 10) && (projectile.Target.Y <= projectile.Position.Y + 10)))
+            if (((projectile.Target.X >= projectile.Position.X - 15) && (projectile.Target.X <= projectile.Position.X + 15)) &&
+                ((projectile.Target.Y >= projectile.Position.Y - 15) && (projectile.Target.Y <= projectile.Position.Y + 15)))
             {
                 projectile.KillProjectile();
             }
@@ -143,7 +143,7 @@ namespace BaboGame_test_2
             {
                 if (projectile.DetectCollision(character))
                 {
-                    if (projectile.ShooterID != character.IDcharacter)
+                    if ((projectile.ShooterID != character.IDcharacter)||(projectile.HitCount != 0))
                     {
                         // notificar el dany al personatge!!!
                         character.NotifyHit(projectile.Direction, projectile.ShooterID, projectile.Damage, projectile.LinearVelocity);
@@ -218,6 +218,8 @@ namespace BaboGame_test_2
         // Movem el projectil de forma determinada per la direcció i velocitat linial
         public void Move()
         {
+            if (LinearVelocity > 25f)
+                LinearVelocity = 25f;
             this.Position += this.Direction * LinearVelocity;
 
             //Funcionament de canvi d'escala de la sal per donar la sensació d'un moviment parabòlic

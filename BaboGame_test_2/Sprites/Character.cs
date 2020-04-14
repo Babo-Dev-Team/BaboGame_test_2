@@ -265,7 +265,8 @@ namespace BaboGame_test_2
                 }
             }
         }
-        private bool DetectObjCollisions(List<ScenarioObjects> ObjectSprites)
+        /*
+        public bool DetectObjCollisions(List<ScenarioObjects> ObjectSprites)
         {
             bool collisionDetected = false;
             foreach (var Object in ObjectSprites)
@@ -274,7 +275,7 @@ namespace BaboGame_test_2
                 
             return collisionDetected;
         }
-
+        */
         //Apartat de les animacions
         protected virtual void SetAnimations()
         {

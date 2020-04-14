@@ -21,6 +21,7 @@ using Microsoft.Xna.Framework;
         public float Layer = 0f;
         public SpriteEffects Effect = SpriteEffects.None;
         public Color _color = Color.White;
+        public bool Visible = true;
 
         //Variables entorn a la detecció de tecles del teclat i el ratolí; i les seves entrades
         protected KeyboardState currentKey;
@@ -74,6 +75,10 @@ using Microsoft.Xna.Framework;
         public bool IsHealth = false;
         public float heart_health = 0f;
         public int hearthPosition;
+
+        //Variables relacionades amb el menú de la salt
+        public bool IsMenuSalt = false;
+        public int MenuPos = 0;
 
         //Funció principal per definir el sprite generat
         public Sprite(Texture2D texture)

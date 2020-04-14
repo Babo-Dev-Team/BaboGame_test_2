@@ -46,10 +46,11 @@
     <Compile Include="Managers\Debugger.cs" />
     <Compile Include="Managers\HeartManager.cs" />
     <Compile Include="Managers\InputManager.cs" />
+    <Compile Include="Managers\ProjectileManager.cs" />
     <Compile Include="Models\Animation.cs" />
     <Compile Include="Models\Input.cs" />
-    <Compile Include="Projectile Engine\ProjectileEngine.cs" />
-    <Compile Include="Projectile Engine\SlimeEngine.cs" />
+    <Compile Include="Engines\ProjectileEngine.cs" />
+    <Compile Include="Engines\SlimeEngine.cs" />
     <Compile Include="Sprites\Character.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Program.cs" />

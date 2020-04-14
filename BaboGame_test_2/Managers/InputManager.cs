@@ -112,5 +112,10 @@ namespace BaboGame_test_2
             mousePosition.Y = Mouse.GetState().Y;
             return mousePosition;
         }
+
+        public int GetMouseWheelValue()
+        {
+            return Mouse.GetState().ScrollWheelValue;
+        }
     }
 }

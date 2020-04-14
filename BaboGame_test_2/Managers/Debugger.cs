@@ -45,7 +45,8 @@ namespace BaboGame_test_2
             spriteBatch.DrawString(_font, string.Format("Mouse Position: {0}", new Vector2(Mouse.GetState().X,Mouse.GetState().Y)), new Vector2(10, fontY += 20), Color.Black);
             spriteBatch.DrawString(_font, string.Format("SlimeTimer: {0}", _timer1), new Vector2(10, fontY += 20), Color.Black);
             spriteBatch.DrawString(_font, string.Format("Screen Dimensions: {0}", new Vector2(widthscreen, heightscreen)), new Vector2(10, fontY += 20), Color.Black);
-        
-    }
+            spriteBatch.DrawString(_font, string.Format("WheelMouse: {0}", Mouse.GetState().ScrollWheelValue), new Vector2(10, fontY += 20), Color.Black);
+
+        }
     }
 }

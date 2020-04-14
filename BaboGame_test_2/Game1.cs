@@ -29,6 +29,7 @@ namespace BaboGame_test_2
         private List<ScenarioObjects> scenarioSprites;      // Sprites per objectes sòlids que estiguin per pantalla
 
         ProjectileEngine projectileEngine;
+        ProjectileManager projectileManager;
         Dictionary<string, Texture2D> projectileTexture;
         SlimeEngine slimeEngine;
         HeartManager heartManager;                          // Mecanismes de la vida
@@ -60,8 +61,6 @@ namespace BaboGame_test_2
         protected override void Initialize()
         {
             base.Initialize();
-            projectileSprites = new List<Projectile>();
-            projectileEngine = new ProjectileEngine(projectileSprites);
             slimeSprites = new List<Slime>();
             slimeEngine = new SlimeEngine(slimeSprites);
             
@@ -129,6 +128,7 @@ namespace BaboGame_test_2
             var sightTexture = Content.Load<Texture2D>("Sight/Sight_off");
             var scenarioTexture = Content.Load<Texture2D>("Scenario/Block");
 
+            var projectileMenuTexture = Content.Load<Texture2D>("Slug_status/SaltMenu");
             projectileTexture = new Dictionary<string, Texture2D>()
             {
                 {"Normal", Content.Load<Texture2D>("Projectile/Salt")},
@@ -162,6 +162,8 @@ namespace BaboGame_test_2
                 },
              };
 
+            
+
             // La mira necessita que li passem inputManager per obtenir la posició del ratolí
             overlaySprites = new List<Sprite>()
             {
@@ -184,11 +186,23 @@ namespace BaboGame_test_2
                     Scale = 0.2f,
                     SolidObject = true,
                 },
+
+                new ScenarioObjects(scenarioTexture)
+                {
+                    Position = new Vector2(400,500),
+                    Scale = 0.2f,
+                    SolidObject = true,
+                },
             };
 
             heartManager = new HeartManager(overlaySprites);
             heartManager.CreateHeart(1, 5, 20, slugHealth,new Vector2(100,300));
             heartManager.CreateHeart(2, 10, 39, slugHealth,new Vector2(100,400)); //--------------------- Babo prova
+
+            projectileSprites = new List<Projectile>();
+            projectileEngine = new ProjectileEngine(projectileSprites);
+            projectileManager = new ProjectileManager(projectileTexture, projectileEngine);
+            projectileManager.CreateSaltMenu(projectileMenuTexture, overlaySprites, 1, 0.1f);
 
             // punter que apunta al personatge controlat pel jugador
             playerChar = characterSprites.ToArray()[0];
@@ -274,12 +288,13 @@ namespace BaboGame_test_2
 
             // llançem projectils segons els inputs del jugador
             inputManager.DetectMouseClicks();
+            projectileManager.Update(gameTime, inputManager.GetMouseWheelValue(), overlaySprites,characterSprites);
             if (inputManager.LeftMouseClick())
             {
                 Vector2 projOrigin = playerChar.Position;
                 Vector2 projTarget = inputManager.GetMousePosition();
                 int shooterID = 1; // caldrà gestionar els ID's des del server
-                projectileEngine.AddProjectile(projOrigin, projTarget, projectileTexture["Normal"], shooterID, 'N');
+                projectileManager.AddProjectile(projOrigin, projTarget, shooterID);
             }
 
             //if (EnemyShoot.Next(0,32) == 0) //--------------------------- Babo prova
@@ -404,7 +419,8 @@ namespace BaboGame_test_2
             }
             foreach (var overlay in overlaySprites)
             {
-                overlay.Draw(spriteBatch);
+                if(overlay.Visible)
+                    overlay.Draw(spriteBatch);
             }
             spriteBatch.End();
 
