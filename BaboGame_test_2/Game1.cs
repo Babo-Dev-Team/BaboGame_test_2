@@ -36,6 +36,7 @@ namespace BaboGame_test_2
         InputManager inputManager = new InputManager(Keys.W, Keys.S, Keys.A, Keys.D); // El passem ja inicialitzat als objectes
         KeyboardState _previousState;
 
+        CharacterEngine characterEngine;
         Character playerChar;                               // Punter cap al character controlat pel jugador
         Character playerChar2;                               // Punter cap al character de provas-------------------------Babo prova
         Texture2D slimeTexture;                             // Textura per instanciar les babes
@@ -185,6 +186,7 @@ namespace BaboGame_test_2
                     Position = new Vector2(400,100),
                     Scale = 0.2f,
                     SolidObject = true,
+                    HitBoxScale = 1f,
                 },
 
                 new ScenarioObjects(scenarioTexture)
@@ -192,8 +194,11 @@ namespace BaboGame_test_2
                     Position = new Vector2(400,500),
                     Scale = 0.2f,
                     SolidObject = true,
+                    HitBoxScale = 1f,
                 },
             };
+
+            characterEngine = new CharacterEngine(characterSprites);
 
             heartManager = new HeartManager(overlaySprites);
             heartManager.CreateHeart(1, 5, 20, slugHealth,new Vector2(100,300));
@@ -264,6 +269,7 @@ namespace BaboGame_test_2
                 playerChar.MoveDown();
             }
             
+            
             //Actualitzem moviment del llimac de prova ---------------------Babo prova
             playerChar2.Direction = VectorOps.UnitVector(playerChar.Position - playerChar2.Position);
 
@@ -285,7 +291,7 @@ namespace BaboGame_test_2
                 Slug2Direction2 = true;
             else if (playerChar2.Position.Y < 0)
                 Slug2Direction2 = false;
-
+            
             // llançem projectils segons els inputs del jugador
             inputManager.DetectMouseClicks();
             projectileManager.Update(gameTime, inputManager.GetMouseWheelValue(), overlaySprites,characterSprites);
@@ -298,7 +304,7 @@ namespace BaboGame_test_2
             }
 
             //if (EnemyShoot.Next(0,32) == 0) //--------------------------- Babo prova
-            //projectileEngine.AddProjectile(playerChar2.Position, playerChar.Position, projectileTexture, 2);
+             //projectileEngine.AddProjectile(playerChar2.Position, playerChar.Position, projectileTexture["Slimed"], 2,'S');
 
             //Això actualitzaria els objectes del escenari
             foreach (var ScenarioObj in scenarioSprites)
@@ -306,6 +312,7 @@ namespace BaboGame_test_2
                 ScenarioObj.Update(gameTime);
             }
 
+            characterEngine.Update(gameTime,slimeSprites,scenarioSprites);
             // Això hauria de moure els projectils, calcular les colisions i notificar als characters si hi ha hagut dany.
             projectileEngine.UpdateProjectiles(gameTime, characterSprites, scenarioSprites);
 

@@ -78,6 +78,15 @@ namespace BaboGame_test_2
                 projectile.KillProjectile();
             }
 
+            //Definim la colisió entre la sal
+            foreach (var projectileItem in projectileList)
+            {
+                if((projectile.DetectCollision(projectileItem))&&(projectileItem != projectile))
+                {
+                    projectile.KillProjectile();
+                }
+            }
+
             //Definir la colisió de la sal
             foreach (var character in characterList)
             {
@@ -108,6 +117,15 @@ namespace BaboGame_test_2
             if (VectorOps.ModuloVector(projectile.Origin - projectile.Position) > 2000)
                 projectile.KillProjectile();
 
+            //Definim la colisió entre la sal
+            foreach (var projectileItem in projectileList)
+            {
+                if((projectile.DetectCollision(projectileItem))&&(projectileItem != projectile))
+                {
+                    projectile.KillProjectile();
+                }
+            }
+
             //Definir la colisió de la sal
             foreach (var character in characterList)
             {
@@ -137,6 +155,43 @@ namespace BaboGame_test_2
             //Elimina la sal en un límit de distancia
             if (VectorOps.ModuloVector(projectile.Origin - projectile.Position) > 2000)
                 projectile.KillProjectile();
+
+            //Definim la colisió entre la sal
+            foreach (var projectileItem in projectileList)
+            {
+                if((projectile.DetectCollision(projectileItem))&&(projectileItem != projectile))
+                {
+                    if(projectileItem.ProjectileType == 'S')
+                    {
+                        if (projectile.DetectBottomCollision(projectileItem))
+                        {
+                            projectile.Direction.Y = Math.Abs(projectile.Direction.Y);
+                            projectile.HitCount++;
+                        }
+
+                        if (projectile.DetectTopCollision(projectileItem))
+                        {
+                            projectile.Direction.Y = -Math.Abs(projectile.Direction.Y);
+                            projectile.HitCount++;
+                        }
+
+                        if (projectile.DetectRightCollision(projectileItem))
+                        {
+                            projectile.Direction.X = Math.Abs(projectile.Direction.X);
+                            projectile.HitCount++;
+                        }
+                        if (projectile.DetectLeftCollision(projectileItem))
+                        {
+                            projectile.Direction.X = -Math.Abs(projectile.Direction.X);
+                            projectile.HitCount++;
+                        }
+                    }
+                    else
+                        projectile.KillProjectile();
+
+                }
+
+            }
 
             //Definir la colisió de la sal
             foreach (var character in characterList)

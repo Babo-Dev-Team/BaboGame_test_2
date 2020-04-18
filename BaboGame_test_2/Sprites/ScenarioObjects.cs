@@ -9,12 +9,12 @@ using Microsoft.Xna.Framework;
 
 namespace BaboGame_test_2
 {
-    class ScenarioObjects : Sprite
+    public class ScenarioObjects : Sprite
     {
         public ScenarioObjects(Texture2D texture)
             : base(texture)
         {
-
+            SolidObject = true;
         }
 
         public ScenarioObjects(Dictionary<string, Animation> animations)

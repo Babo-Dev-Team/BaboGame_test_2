@@ -32,30 +32,21 @@ namespace BaboGame_test_2
                 {
                     foreach (var projectile in projectileList)
                     {
-                        if (slime.DetectCollision(projectile) && (slime.IsNear(projectile.Target)) && (!slime.IsSalted))
+                        if (slime.DetectCollision(projectile) && (slime.IsNear(projectile.Target)) && (!slime.IsSalted) && (projectile.ProjectileType == 'N'))
                             slime.IsSalted = true;
-                    }
-
-                    foreach (var character in characterList)
-                    {
-                    if (slime.DetectCollision(character) && (slime.ShooterID != character.IDcharacter))
-                        character.NotifySlip();
-                            
                     }
 
                     if (slime.IsSalted)
                         slime._color = Color.Silver;
 
-                if ((slime.timer > 20) && (!slime.IsSalted))
-                    slime.KillSlime();
-                else if (slime.timer > 200)
-                    slime.KillSlime();
+                    if ((slime.timer > 20) && (!slime.IsSalted))
+                        slime.KillSlime();
+                    else if (slime.timer > 200)
+                        slime.KillSlime();
 
-                slime.Layer = 0.001f - slime.timer * 0.00001f; 
+                    slime.Layer = 0.001f - slime.timer * 0.00001f; 
 
-                }
-                
-                
+                }          
         }
     }
 

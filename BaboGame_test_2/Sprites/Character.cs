@@ -13,7 +13,55 @@ namespace BaboGame_test_2
     /*
      * Defineix el sprite del personatge que el jugador controlarà
      */
-    
+    public class CharacterEngine
+    {
+        List<Character> characterList;
+
+        public CharacterEngine(List<Character> characterList)
+        {
+            this.characterList = characterList;
+        }
+
+        public void Update(GameTime gameTime, List<Slime> slimeList, List<ScenarioObjects> scenarioList)
+        {
+            foreach(var character in characterList)
+            {
+                // si tenim un impacte, desplaçament per impacte
+                if (character.isHit)
+                {
+                    character.Velocity = Vector2.Zero; //Per compensar la cancelació de la velocitat la posaré abans d'agafar la direcció del cop
+                    character.Velocity.X += character.hitImpulse * character.hitDirection.X/5;
+                    character.Velocity.Y += character.hitImpulse * character.hitDirection.Y/5;
+                }
+                else
+                {
+                    character.SlugSlipUpdate();
+                    character.UpdateFriction();
+                    character.UpdateForce();
+                    character.UpdateVelocity();
+                }
+            
+
+                character.UpdateCollision(scenarioList);
+                character.UpdateCharCollision(characterList);
+                character.Position += character.Velocity;
+
+
+                character.VelocityInform = character.Velocity;
+                //Velocity = Vector2.Zero; -- Ara la velocitat es conservarà
+                character.Acceleration = Vector2.Zero;
+
+                //Fem que els llimacs rellisquin amb les babes dels contrincants
+                foreach(var slime in slimeList)
+                {
+                    if (character.DetectCollisions(slime) && (slime.ShooterID != character.IDcharacter))
+                        character.isSlip = true;
+                }
+            }
+        }
+
+
+    }
 
     public class Character : Sprite
     {
@@ -88,7 +136,7 @@ namespace BaboGame_test_2
 
         // Identificadors per la colisió amb projectils
         // mètode públic per restringir l'accés al flag isHit (mantenir-lo privat)
-        private bool isHit;
+        public bool isHit;
         public bool IsHit()
         {
             return this.isHit;
@@ -98,8 +146,8 @@ namespace BaboGame_test_2
         //private Vector2 _previousLinearVelocity;
         //private Vector2 _previousDirection;
 
-        private Vector2 hitDirection;
-        private float hitImpulse;
+        public Vector2 hitDirection;
+        public float hitImpulse;
         float _PainTimer = 0f;
         public Vector2 VelocityInform;
 
@@ -115,36 +163,6 @@ namespace BaboGame_test_2
                 isHit = false;
             }
 
-            // si tenim un impacte, desplaçament per impacte
-            if (isHit)
-            {
-                Velocity = Vector2.Zero; //Per compensar la cancelació de la velocitat la posaré abans d'agafar la direcció del cop
-                Velocity.X += hitImpulse * hitDirection.X/5;
-                Velocity.Y += hitImpulse * hitDirection.Y/5;
-            }
-            else
-            {
-                SlugSlipUpdate();
-                UpdateFriction();
-                UpdateForce();
-                UpdateVelocity();
-            }
-            
-            // si detectem colisions amb altres jugadors, no incrementem posició
-            if((!this.DetectCharCollisions(characterSprites)))
-            {
-                Position += Velocity;
-            }
-            else
-            {
-                //SoftCollision(characterSprites);
-                UpdateCharCollision(characterSprites);
-                Position += Velocity;
-            }
-            VelocityInform = Velocity;
-            //Velocity = Vector2.Zero; -- Ara la velocitat es conservarà
-            Acceleration = Vector2.Zero;
-
             //Reprodueix l'animació
             SetAnimations();
             float Framespeed = 0.2f *4/ (4 + VectorOps.ModuloVector(VelocityInform));
@@ -159,21 +177,7 @@ namespace BaboGame_test_2
                 Layer = LayerValue + 0.01f;
         }
 
-        /*
-        // Fa relliscar el llimac
-        public void SlugSlipUpdate()
-        {
-            this._previousLinearVelocity = this.Velocity;
-        }
-        public void SlugSlip()
-        {
-            
-            this.Velocity.X += this._previousLinearVelocity.X*10/15;
-            this.Velocity.Y += this._previousLinearVelocity.Y*10/15;
-            
-            this._previousLinearVelocity = this.Velocity;
-        }
-        */
+       
         // detectem colisions amb altres jugadors
         public bool DetectCharCollisions(List<Character> charSprites)
         {
@@ -187,49 +191,20 @@ namespace BaboGame_test_2
             return collisionDetected;
         }
 
-        /*
-        // fem una colisió més permisiva per no encallar els personatges
-        public void SoftCollision(List<Character> charSprites)
-        {
-            bool sameDirection = true;
-            Vector2 charVelocity = Vector2.Zero;
-            int charnumber = 0;
-            foreach (var character in charSprites)
-            if (character != this)
-            {
-                if(this.IsTouchingBottom(character) || this.IsTouchingLeft(character) 
-                                || this.IsTouchingRight(character) || this.IsTouchingTop(character))
-                {
-                    if(!((VectorOps.Vector2ToDeg(character.Velocity) > (VectorOps.Vector2ToDeg(Velocity) - 45))&&
-                            (VectorOps.Vector2ToDeg(character.Velocity) < (VectorOps.Vector2ToDeg(Velocity) + 45))))
-                            {
-                                sameDirection = false;
-                            }
-                    charVelocity += character.Velocity;
-                    charnumber++;
-
-                }
-
-            }
-            if(sameDirection)
-                Position += Velocity/2;
-            else if ((charnumber > 0))
-                Position += charVelocity/(8*charnumber);
-               
-        }
-        */
-
         //------------------------------------------- Funcions per les noves mecàniques -----------------------------------------------
+        //Calcula el vector de força
         public void UpdateForce()
         {
             Force = Acceleration*Weight;
         }
+        //Actualitza la velocitat segons l'acceleració actual
         public void UpdateVelocity()
         {
             Velocity += Acceleration;
             if(VectorOps.ModuloVector(Velocity) > Velocity_Threshold)
                 Velocity = VectorOps.UnitVector(Velocity)*Velocity_Threshold;
         }
+        //Aplica els efectes del fregament en el moviment
         public void UpdateFriction()
         {
             float VelocityModulo = VectorOps.ModuloVector(Velocity);
@@ -239,6 +214,7 @@ namespace BaboGame_test_2
             else
                 Velocity = Vector2.Zero;
         }
+        //Modifica el fregament segons si el llimac rellisca o no
         public void SlugSlipUpdate()
         {
             if(isSlip)
@@ -246,6 +222,8 @@ namespace BaboGame_test_2
             else
                 Friction = 1f;
         }
+
+        //Actualitza la collisió
         public void UpdateCharCollision(List<Character> charSprites)
         {
             foreach (var character in charSprites)
@@ -265,17 +243,34 @@ namespace BaboGame_test_2
                 }
             }
         }
-        /*
-        public bool DetectObjCollisions(List<ScenarioObjects> ObjectSprites)
+        
+        //Detectar la col·lisió amb altres objectes
+        public bool DetectCollisions(Sprite sprite)
         {
-            bool collisionDetected = false;
-            foreach (var Object in ObjectSprites)
-                    collisionDetected = this.IsTouchingBottom(Object) || this.IsTouchingLeft(Object)
-                                      || this.IsTouchingRight(Object) || this.IsTouchingTop(Object);
+            bool collisionDetected = this.IsTouchingBottom(sprite) || this.IsTouchingLeft(sprite)
+                                      || this.IsTouchingRight(sprite) || this.IsTouchingTop(sprite);
                 
             return collisionDetected;
         }
-        */
+        
+        //Actualitza la collisió dels objectes
+        public void UpdateCollision(List<ScenarioObjects> scenarioObjects)
+        {
+            foreach (var objectItem in scenarioObjects)
+            {
+                if(this.IsTouchingBottom(objectItem) || this.IsTouchingTop(objectItem))
+                {
+                    this.Velocity.Y = - this.Force.Y/this.Weight;
+                        
+                }
+                if (this.IsTouchingLeft(objectItem) || this.IsTouchingRight(objectItem))
+                {
+                    this.Velocity.X = - this.Force.X/this.Weight;
+                        
+                }            
+            }
+        }
+
         //Apartat de les animacions
         protected virtual void SetAnimations()
         {
@@ -352,9 +347,5 @@ namespace BaboGame_test_2
             this.hitImpulse = hitImpulse;
         }
 
-        public void NotifySlip()
-        {
-            this.isSlip = true;
-        }
     }
 }
