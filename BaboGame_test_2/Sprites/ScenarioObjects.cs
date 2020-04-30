@@ -11,6 +11,10 @@ namespace BaboGame_test_2
 {
     public class ScenarioObjects : Sprite
     {
+        //Variables entorn a la electricitat
+        public bool HasConducitvity = false;
+        public float Voltage = 0f;
+        
         public ScenarioObjects(Texture2D texture)
             : base(texture)
         {

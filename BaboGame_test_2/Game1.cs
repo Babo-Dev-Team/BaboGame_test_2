@@ -139,8 +139,8 @@ namespace BaboGame_test_2
             
             slimeTexture = Content.Load<Texture2D>("Projectile/slime2");
 
-            characterSprites = new List<Character>()
-            {
+            characterSprites = new List<Character>();
+            /*{
                 new Character(slugAnimations)
                 {
                     Position = new Vector2(100,100),
@@ -161,7 +161,7 @@ namespace BaboGame_test_2
                     Health=40,
                     IDcharacter = 2,
                 },
-             };
+             };*/
 
             
 
@@ -199,6 +199,9 @@ namespace BaboGame_test_2
             };
 
             characterEngine = new CharacterEngine(characterSprites);
+            characterEngine.AddCharacter(slugAnimations,new Vector2(100,100), 0.25f, 0.6f, 20, 1,Color.White);
+            characterEngine.AddCharacter(slugAnimations,new Vector2(300,300), 0.25f, 0.6f, 40, 2,Color.Silver);
+
 
             heartManager = new HeartManager(overlaySprites);
             heartManager.CreateHeart(1, 5, 20, slugHealth,new Vector2(100,300));
@@ -345,7 +348,7 @@ namespace BaboGame_test_2
             }
 
             //Això hauria de fer reaccionar les babes a projectils, characters i objectes de l'escenari
-            slimeEngine.UpdateSlime(gameTime, characterSprites, projectileSprites);
+            slimeEngine.UpdateSlime(gameTime, characterSprites, projectileSprites, scenarioSprites);
 
             foreach (var overlay in this.overlaySprites)
             {

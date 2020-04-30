@@ -60,6 +60,11 @@ namespace BaboGame_test_2
             }
         }
 
+        public void AddCharacter(Dictionary<string,Animation> slugAnimations, Vector2 Position, float Scale, float HitBoxScale, int Health, int IDCharacter, Color color)
+        {
+            characterList.Add(new Character(slugAnimations,Position,Scale,HitBoxScale,Health,IDCharacter,color));
+        }
+
 
     }
 
@@ -85,6 +90,18 @@ namespace BaboGame_test_2
         public Character(Dictionary<string, Animation> animations)
            : base(animations)
         {
+            isHit = false;
+        }
+
+        public Character(Dictionary<string, Animation> animations, Vector2 _Position, float _Scale, float _HitBoxScale, int _Health, int _IDcharacter, Color _Color)
+           : base(animations)
+        {
+            Position = _Position;
+            Scale = _Scale;
+            HitBoxScale = _HitBoxScale;
+            Health= _Health;
+            IDcharacter = _IDcharacter;
+            _color = _Color;
             isHit = false;
         }
 

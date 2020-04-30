@@ -26,10 +26,11 @@ namespace BaboGame_test_2
             slimeList.Add(new Slime(origin,shooterID,texture,scale));
         }
 
-        public void UpdateSlime(GameTime gameTime, List<Character> characterList, List<Projectile> projectileList)
+        public void UpdateSlime(GameTime gameTime, List<Character> characterList, List<Projectile> projectileList, List<ScenarioObjects> scenarioList)
         {
                 foreach (var slime in slimeList)
                 {
+                    //Salinització de les babes
                     foreach (var projectile in projectileList)
                     {
                         if (slime.DetectCollision(projectile) && (slime.IsNear(projectile.Target)) && (!slime.IsSalted) && (projectile.ProjectileType == 'N'))
@@ -39,6 +40,7 @@ namespace BaboGame_test_2
                     if (slime.IsSalted)
                         slime._color = Color.Silver;
 
+                    //Destrucció de les babes cada un cert temps
                     if ((slime.timer > 20) && (!slime.IsSalted))
                         slime.KillSlime();
                     else if (slime.timer > 200)
@@ -46,6 +48,41 @@ namespace BaboGame_test_2
 
                     slime.Layer = 0.001f - slime.timer * 0.00001f; 
 
+                    /*
+                    //Conducció de les babes
+                    bool sourceConnect = false;
+                    foreach(var scenObject in scenarioList)
+                    {
+                        if((scenObject.HasConducitvity)&&(slime.DetectCollision(scenObject)))
+                        {
+                            if(slime.Voltage > scenObject)
+                            {
+                                slime.NegativeCurrent = 0f;
+                                sourceConnect = true;
+                            }
+                            else
+                            {
+                                slime.PositiveCurrent = 0f;
+                                slime.Voltage = scenObject.Voltage;
+                            }
+                        }
+                    }
+                    
+                    foreach(var neighborSlime in slimeList)
+                    {
+                        if((neighborSlime != slime)&&(slime.DetectCollision(neighborSlime)))
+                        {
+                            if(neighborSlime.Voltage > slime.Voltage)
+                                slime.Voltage = neighborSlime.Voltage;
+
+                            if((neighborSlime.PositiveCurrent < 16)&&(neighborSlime.PositiveCurrent < slime.PositiveCurrent))
+                                slime.PositiveCurrent = neighborSlime.PositiveCurrent +1;
+
+                            if((neighborSlime.NegativeCurrent < 16)&&(neighborSlime.NegativeCurrent < slime.NegativeCurrent))
+                                slime.NegativeCurrent = neighborSlime.NegativeCurrent +1;
+                        }
+                    }
+                    */
                 }          
         }
     }
@@ -58,6 +95,8 @@ namespace BaboGame_test_2
         public int ShooterID { get; }
         public bool IsSalted;
         private float radiumSlime = 10f;
+        public int PositiveCurrent = 16;
+        public int NegativeCurrent = 16;
 
         // constrctor per inicialitzar la baba
         public Slime(Vector2 origin, int shooterID, Texture2D texture, float scale)
