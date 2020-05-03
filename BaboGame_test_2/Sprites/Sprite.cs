@@ -67,6 +67,8 @@ using Microsoft.Xna.Framework;
 
         //Variables relacionades amb la col·lisió
         public float HitBoxScale = 1f;
+        public float HitBoxScaleH;
+        public float HitBoxScaleW;
         public bool SolidObject = true;
         public int IDcharacter = 0;
         public bool IsSaltShoot = false;
@@ -137,7 +139,10 @@ using Microsoft.Xna.Framework;
             get
             {
                 if (_texture != null)
-                    return new Rectangle((int)(Position.X - Origin.X * Scale), (int)(Position.Y - Origin.Y * Scale), (int)(_texture.Width * Scale * HitBoxScale), (int)(_texture.Height * Scale * HitBoxScale));
+                    if (HitBoxScaleH == 0 || HitBoxScaleW == 0)
+                        return new Rectangle((int)(Position.X - Origin.X * Scale), (int)(Position.Y - Origin.Y * Scale), (int)(_texture.Width * Scale * HitBoxScale), (int)(_texture.Height * Scale * HitBoxScale));
+                    else
+                        return new Rectangle((int)(Position.X - Origin.X * Scale), (int)(Position.Y - Origin.Y * Scale), (int)(_texture.Width * Scale * HitBoxScaleW), (int)(_texture.Height * Scale * HitBoxScaleH));
                 else
                     return _animationManager.AnimationRectangle();
             }

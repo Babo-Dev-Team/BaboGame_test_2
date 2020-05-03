@@ -60,9 +60,14 @@ namespace BaboGame_test_2
             }
         }
 
-        public void AddCharacter(Dictionary<string,Animation> slugAnimations, Vector2 Position, float Scale, float HitBoxScale, int Health, int IDCharacter, Color color)
+        public void AddCharacter(Dictionary<string, Animation> slugAnimations, Vector2 Position, float Scale, float HitBoxScaleW, float HitBoxScaleH, int Health, int IDCharacter, Color color)
         {
-            characterList.Add(new Character(slugAnimations,Position,Scale,HitBoxScale,Health,IDCharacter,color));
+            characterList.Add(new Character(slugAnimations,Position,Scale,HitBoxScaleW,HitBoxScaleH,Health,IDCharacter,color));
+        }
+
+        public void AddCharacter(Dictionary<string, Animation> slugAnimations, Vector2 Position, float Scale, float HitBoxScale, int Health, int IDCharacter, Color color)
+        {
+            characterList.Add(new Character(slugAnimations, Position, Scale, HitBoxScale, Health, IDCharacter, color));
         }
 
 
@@ -93,13 +98,26 @@ namespace BaboGame_test_2
             isHit = false;
         }
 
+        public Character(Dictionary<string, Animation> animations, Vector2 _Position, float _Scale, float _HitBoxScaleW, float _HitBoxScaleH, int _Health, int _IDcharacter, Color _Color)
+           : base(animations)
+        {
+            Position = _Position;
+            Scale = _Scale;
+            HitBoxScaleW = _HitBoxScaleW;
+            HitBoxScaleH = _HitBoxScaleH;
+            Health= _Health;
+            IDcharacter = _IDcharacter;
+            _color = _Color;
+            isHit = false;
+        }
+
         public Character(Dictionary<string, Animation> animations, Vector2 _Position, float _Scale, float _HitBoxScale, int _Health, int _IDcharacter, Color _Color)
            : base(animations)
         {
             Position = _Position;
             Scale = _Scale;
             HitBoxScale = _HitBoxScale;
-            Health= _Health;
+            Health = _Health;
             IDcharacter = _IDcharacter;
             _color = _Color;
             isHit = false;
@@ -297,13 +315,13 @@ namespace BaboGame_test_2
                 float angle = VectorOps.Vector2ToDeg(Direction);
                 //Animació de ser colpejat per la salt
                 if (angle < 315 && angle > 225)
-                    _animationManager.Play(_animations["Babo up hit"]);
+                    _animationManager.Play(_animations["Slug up hit"]);
                 else if (angle >= 315 || angle < 45)
-                    _animationManager.Play(_animations["Babo right hit"]);
+                    _animationManager.Play(_animations["Slug right hit"]);
                 else if (angle <= 225 && angle > 135)
-                    _animationManager.Play(_animations["Babo left hit"]);
+                    _animationManager.Play(_animations["Slug left hit"]);
                 else
-                    _animationManager.Play(_animations["Babo down hit"]);
+                    _animationManager.Play(_animations["Slug down hit"]);
             }
             else
             {
@@ -312,47 +330,47 @@ namespace BaboGame_test_2
                 
                 float angle = VectorOps.Vector2ToDeg(Direction);
                 if ((angle <= 9 && angle >= 0) || (angle <= 360 && angle > 351))
-                    _animationManager.Play(_animations["Babo right0"]);
+                    _animationManager.Play(_animations["Slug right0"]);
                 else if (angle <= 27 && angle > 9)
-                    _animationManager.Play(_animations["Babo right-22_5"]);
+                    _animationManager.Play(_animations["Slug right-22_5"]);
                 else if (angle <= 45 && angle > 27)
-                    _animationManager.Play(_animations["Babo right-45"]);
+                    _animationManager.Play(_animations["Slug right-45"]);
                 else if (angle <= 63 && angle > 45)
-                    _animationManager.Play(_animations["Babo down45"]);
+                    _animationManager.Play(_animations["Slug down45"]);
                 else if (angle <= 81 && angle > 63)
-                    _animationManager.Play(_animations["Babo down22_5"]);
+                    _animationManager.Play(_animations["Slug down22_5"]);
                 else if (angle <= 99 && angle > 81)
-                    _animationManager.Play(_animations["Babo down0"]);
+                    _animationManager.Play(_animations["Slug down0"]);
                 else if (angle <= 117 && angle > 99)
-                    _animationManager.Play(_animations["Babo down-22_5"]);
+                    _animationManager.Play(_animations["Slug down-22_5"]);
                 else if (angle <= 135 && angle > 117)
-                    _animationManager.Play(_animations["Babo down-45"]);
+                    _animationManager.Play(_animations["Slug down-45"]);
                 else if (angle <= 153 && angle > 135)
-                    _animationManager.Play(_animations["Babo left45"]);
+                    _animationManager.Play(_animations["Slug left45"]);
                 else if (angle <= 171 && angle > 153)
-                    _animationManager.Play(_animations["Babo left22_5"]);
+                    _animationManager.Play(_animations["Slug left22_5"]);
                 else if (angle <= 189 && angle > 171)
-                    _animationManager.Play(_animations["Babo left0"]);
+                    _animationManager.Play(_animations["Slug left0"]);
                 else if (angle <= 207 && angle > 189)
-                    _animationManager.Play(_animations["Babo left-22_5"]);
+                    _animationManager.Play(_animations["Slug left-22_5"]);
                 else if (angle <= 225 && angle > 207)
-                    _animationManager.Play(_animations["Babo left-45"]);
+                    _animationManager.Play(_animations["Slug left-45"]);
                 else if (angle <= 243 && angle > 225)
-                    _animationManager.Play(_animations["Babo up45"]);
+                    _animationManager.Play(_animations["Slug up45"]);
                 else if (angle <= 261 && angle > 243)
-                    _animationManager.Play(_animations["Babo up22_5"]);
+                    _animationManager.Play(_animations["Slug up22_5"]);
                 else if (angle <= 279 && angle > 261)
-                    _animationManager.Play(_animations["Babo up0"]);
+                    _animationManager.Play(_animations["Slug up0"]);
                 else if (angle <= 297 && angle > 279)
-                    _animationManager.Play(_animations["Babo up-22_5"]);
+                    _animationManager.Play(_animations["Slug up-22_5"]);
                 else if (angle <= 315 && angle > 297)
-                    _animationManager.Play(_animations["Babo up-45"]);
+                    _animationManager.Play(_animations["Slug up-45"]);
                 else if (angle <= 333 && angle > 315)
-                    _animationManager.Play(_animations["Babo right45"]);
+                    _animationManager.Play(_animations["Slug right45"]);
                 else if (angle <= 351 && angle > 333)
-                    _animationManager.Play(_animations["Babo right22_5"]);
+                    _animationManager.Play(_animations["Slug right22_5"]);
                 else
-                    _animationManager.Play(_animations["Babo down0"]);
+                    _animationManager.Play(_animations["Slug down0"]);
             }
         }
 

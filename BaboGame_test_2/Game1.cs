@@ -76,37 +76,68 @@ namespace BaboGame_test_2
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            Dictionary<string, Animation> slugAnimations = new Dictionary<string, Animation>()
+            Dictionary<string, Animation> BaboAnimations = new Dictionary<string, Animation>()
             {
-                {"Babo down0", new Animation(Content.Load<Texture2D>("Babo/Babo down0"), 6) },
-                {"Babo up0", new Animation(Content.Load<Texture2D>("Babo/Babo up0"), 6) },
-                {"Babo down0 bck", new Animation(Content.Load<Texture2D>("Babo/Babo down0 s0"), 1) },
-                {"Babo up0 bck", new Animation(Content.Load<Texture2D>("Babo/Babo up0 s0"), 1) },
-                {"Babo right0", new Animation(Content.Load<Texture2D>("Babo/Babo right0"), 6) },
-                {"Babo left0", new Animation(Content.Load<Texture2D>("Babo/Babo left0"), 6) },
-                {"Babo down22_5", new Animation(Content.Load<Texture2D>("Babo/Babo down22_5"), 6) },
-                {"Babo up22_5", new Animation(Content.Load<Texture2D>("Babo/Babo up22_5"), 6) },
-                {"Babo right22_5", new Animation(Content.Load<Texture2D>("Babo/Babo right22_5"), 6) },
-                {"Babo left22_5", new Animation(Content.Load<Texture2D>("Babo/Babo left22_5"), 6) },
-                {"Babo down45", new Animation(Content.Load<Texture2D>("Babo/Babo down45"), 6) },
-                {"Babo up45", new Animation(Content.Load<Texture2D>("Babo/Babo up45"), 6) },
-                {"Babo right45", new Animation(Content.Load<Texture2D>("Babo/Babo right45"), 6) },
-                {"Babo left45", new Animation(Content.Load<Texture2D>("Babo/Babo left45"), 6) },
-                {"Babo down-22_5", new Animation(Content.Load<Texture2D>("Babo/Babo down-22_5"), 6) },
-                {"Babo up-22_5", new Animation(Content.Load<Texture2D>("Babo/Babo up-22_5"), 6) },
-                {"Babo right-22_5", new Animation(Content.Load<Texture2D>("Babo/Babo right-22_5"), 6) },
-                {"Babo left-22_5", new Animation(Content.Load<Texture2D>("Babo/Babo left-22_5"), 6) },
-                {"Babo down-45", new Animation(Content.Load<Texture2D>("Babo/Babo down-45"), 6) },
-                {"Babo up-45", new Animation(Content.Load<Texture2D>("Babo/Babo up-45"), 6) },
-                {"Babo right-45", new Animation(Content.Load<Texture2D>("Babo/Babo right-45"), 6) },
-                {"Babo left-45", new Animation(Content.Load<Texture2D>("Babo/Babo left-45"), 6) },
-                {"Babo up hit", new Animation(Content.Load<Texture2D>("Babo/Babo up hit"), 1) },
-                {"Babo down hit", new Animation(Content.Load<Texture2D>("Babo/Babo down hit"), 1) },
-                {"Babo right hit", new Animation(Content.Load<Texture2D>("Babo/Babo right hit"), 1) },
-                {"Babo left hit", new Animation(Content.Load<Texture2D>("Babo/Babo left hit"), 1) },
+                {"Slug down0", new Animation(Content.Load<Texture2D>("Babo/Babo down0"), 6) },
+                {"Slug up0", new Animation(Content.Load<Texture2D>("Babo/Babo up0"), 6) },
+                {"Slug down0 bck", new Animation(Content.Load<Texture2D>("Babo/Babo down0 s0"), 1) },
+                {"Slug up0 bck", new Animation(Content.Load<Texture2D>("Babo/Babo up0 s0"), 1) },
+                {"Slug right0", new Animation(Content.Load<Texture2D>("Babo/Babo right0"), 6) },
+                {"Slug left0", new Animation(Content.Load<Texture2D>("Babo/Babo left0"), 6) },
+                {"Slug down22_5", new Animation(Content.Load<Texture2D>("Babo/Babo down22_5"), 6) },
+                {"Slug up22_5", new Animation(Content.Load<Texture2D>("Babo/Babo up22_5"), 6) },
+                {"Slug right22_5", new Animation(Content.Load<Texture2D>("Babo/Babo right22_5"), 6) },
+                {"Slug left22_5", new Animation(Content.Load<Texture2D>("Babo/Babo left22_5"), 6) },
+                {"Slug down45", new Animation(Content.Load<Texture2D>("Babo/Babo down45"), 6) },
+                {"Slug up45", new Animation(Content.Load<Texture2D>("Babo/Babo up45"), 6) },
+                {"Slug right45", new Animation(Content.Load<Texture2D>("Babo/Babo right45"), 6) },
+                {"Slug left45", new Animation(Content.Load<Texture2D>("Babo/Babo left45"), 6) },
+                {"Slug down-22_5", new Animation(Content.Load<Texture2D>("Babo/Babo down-22_5"), 6) },
+                {"Slug up-22_5", new Animation(Content.Load<Texture2D>("Babo/Babo up-22_5"), 6) },
+                {"Slug right-22_5", new Animation(Content.Load<Texture2D>("Babo/Babo right-22_5"), 6) },
+                {"Slug left-22_5", new Animation(Content.Load<Texture2D>("Babo/Babo left-22_5"), 6) },
+                {"Slug down-45", new Animation(Content.Load<Texture2D>("Babo/Babo down-45"), 6) },
+                {"Slug up-45", new Animation(Content.Load<Texture2D>("Babo/Babo up-45"), 6) },
+                {"Slug right-45", new Animation(Content.Load<Texture2D>("Babo/Babo right-45"), 6) },
+                {"Slug left-45", new Animation(Content.Load<Texture2D>("Babo/Babo left-45"), 6) },
+                {"Slug up hit", new Animation(Content.Load<Texture2D>("Babo/Babo up hit"), 1) },
+                {"Slug down hit", new Animation(Content.Load<Texture2D>("Babo/Babo down hit"), 1) },
+                {"Slug right hit", new Animation(Content.Load<Texture2D>("Babo/Babo right hit"), 1) },
+                {"Slug left hit", new Animation(Content.Load<Texture2D>("Babo/Babo left hit"), 1) },
 
             };
+         
+            Dictionary<string, Animation> LimaxAnimations = new Dictionary<string, Animation>()
+            {
+                {"Slug down0", new Animation(Content.Load<Texture2D>("Limax/Limax down0"), 6) },
+                {"Slug up0", new Animation(Content.Load<Texture2D>("Limax/Limax up0"), 6) },
+                {"Slug down0 bck", new Animation(Content.Load<Texture2D>("Limax/Limax down0 s0"), 1) },
+                {"Slug up0 bck", new Animation(Content.Load<Texture2D>("Limax/Limax up0 s0"), 1) },
+                {"Slug right0", new Animation(Content.Load<Texture2D>("Limax/Limax right0"), 6) },
+                {"Slug left0", new Animation(Content.Load<Texture2D>("Limax/Limax left0"), 6) },
+                {"Slug down22_5", new Animation(Content.Load<Texture2D>("Limax/Limax down22_5"), 6) },
+                {"Slug up22_5", new Animation(Content.Load<Texture2D>("Limax/Limax up22_5"), 6) },
+                {"Slug right22_5", new Animation(Content.Load<Texture2D>("Limax/Limax right22_5"), 6) },
+                {"Slug left22_5", new Animation(Content.Load<Texture2D>("Limax/Limax left22_5"), 6) },
+                {"Slug down45", new Animation(Content.Load<Texture2D>("Limax/Limax down45"), 6) },
+                {"Slug up45", new Animation(Content.Load<Texture2D>("Limax/Limax up45"), 6) },
+                {"Slug right45", new Animation(Content.Load<Texture2D>("Limax/Limax right45"), 6) },
+                {"Slug left45", new Animation(Content.Load<Texture2D>("Limax/Limax left45"), 6) },
+                {"Slug down-22_5", new Animation(Content.Load<Texture2D>("Limax/Limax down-22_5"), 6) },
+                {"Slug up-22_5", new Animation(Content.Load<Texture2D>("Limax/Limax up-22_5"), 6) },
+                {"Slug right-22_5", new Animation(Content.Load<Texture2D>("Limax/Limax right-22_5"), 6) },
+                {"Slug left-22_5", new Animation(Content.Load<Texture2D>("Limax/Limax left-22_5"), 6) },
+                {"Slug down-45", new Animation(Content.Load<Texture2D>("Limax/Limax down-45"), 6) },
+                {"Slug up-45", new Animation(Content.Load<Texture2D>("Limax/Limax up-45"), 6) },
+                {"Slug right-45", new Animation(Content.Load<Texture2D>("Limax/Limax right-45"), 6) },
+                {"Slug left-45", new Animation(Content.Load<Texture2D>("Limax/Limax left-45"), 6) },
+                {"Slug up hit", new Animation(Content.Load<Texture2D>("Limax/Limax up hit"), 1) },
+                {"Slug down hit", new Animation(Content.Load<Texture2D>("Limax/Limax down hit"), 1) },
+                {"Slug right hit", new Animation(Content.Load<Texture2D>("Limax/Limax right hit"), 1) },
+                {"Slug left hit", new Animation(Content.Load<Texture2D>("Limax/Limax left hit"), 1) },
 
+            };
+     
             Dictionary<string, Animation> slugHealth = new Dictionary<string, Animation>()
             {
                 {"3/4 heart", new Animation(Content.Load<Texture2D>("Slug_status/heart-3_4"), 1) },
@@ -199,8 +230,8 @@ namespace BaboGame_test_2
             };
 
             characterEngine = new CharacterEngine(characterSprites);
-            characterEngine.AddCharacter(slugAnimations,new Vector2(100,100), 0.25f, 0.6f, 20, 1,Color.White);
-            characterEngine.AddCharacter(slugAnimations,new Vector2(300,300), 0.25f, 0.6f, 40, 2,Color.Silver);
+            characterEngine.AddCharacter(LimaxAnimations,new Vector2(100,100), 0.25f, 0.5f, 20, 1,Color.White);
+            characterEngine.AddCharacter(BaboAnimations,new Vector2(300,300), 0.25f, 0.6f, 40, 2,Color.White);
 
 
             heartManager = new HeartManager(overlaySprites);
