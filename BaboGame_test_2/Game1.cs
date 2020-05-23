@@ -39,6 +39,7 @@ namespace BaboGame_test_2
         CharacterEngine characterEngine;
         Character playerChar;                               // Punter cap al character controlat pel jugador
         Character playerChar2;                               // Punter cap al character de provas-------------------------Babo prova
+        Character playerChar3;                               // Punter cap al character de provas-------------------------Limax prova
         Texture2D slimeTexture;                             // Textura per instanciar les babes
         //Temporització de les babes
         private static Timer timer;
@@ -49,8 +50,8 @@ namespace BaboGame_test_2
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            graphics.PreferredBackBufferHeight = 920;
-            graphics.PreferredBackBufferWidth = 1600;
+            graphics.PreferredBackBufferHeight = 720;
+            graphics.PreferredBackBufferWidth = 1280;
         }
 
         /// <summary>
@@ -132,6 +133,8 @@ namespace BaboGame_test_2
                     Scale = 0.2f,
                     SolidObject = true,
                     HitBoxScale = 1f,
+                    HasConducitivity = true,
+                    Charge = 'P',
                 },
 
                 new ScenarioObjects(scenarioTexture)
@@ -140,17 +143,21 @@ namespace BaboGame_test_2
                     Scale = 0.2f,
                     SolidObject = true,
                     HitBoxScale = 1f,
+                    HasConducitivity = true,
+                    Charge = 'N',
                 },
             };
 
             characterEngine = new CharacterEngine(characterSprites,Content);
-            characterEngine.AddKnownCharacter("Limax",new Vector2(100,100), 0.25f, 20, 1,Color.White);
-            characterEngine.AddKnownCharacter("Babo",new Vector2(300,300), 0.25f, 40, 2,Color.White);
+            characterEngine.AddKnownCharacter("Kaler",new Vector2(100,100), 0.20f, 20, 1,Color.White);
+            characterEngine.AddKnownCharacter("Babo",new Vector2(300,300), 0.20f, 40, 2,Color.White);
+            characterEngine.AddKnownCharacter("Limax", new Vector2(500, 500), 0.20f, 20, 3, Color.White);
 
 
             heartManager = new HeartManager(overlaySprites);
             heartManager.CreateHeart(1, 5, 20, slugHealth,new Vector2(100,300));
             heartManager.CreateHeart(2, 10, 39, slugHealth,new Vector2(100,400)); //--------------------- Babo prova
+            heartManager.CreateHeart(3, 5, 20, slugHealth, new Vector2(500, 100)); //--------------------- Babo prova
 
             projectileSprites = new List<Projectile>();
             projectileEngine = new ProjectileEngine(projectileSprites);
@@ -160,6 +167,7 @@ namespace BaboGame_test_2
             // punter que apunta al personatge controlat pel jugador
             playerChar = characterSprites.ToArray()[0];
             playerChar2 = characterSprites.ToArray()[1]; //------------------------- Babo prova
+            playerChar3 = characterSprites.ToArray()[2]; //------------------------- Babo prova
             _font = Content.Load<SpriteFont>("Font");
 
             //timer
@@ -181,6 +189,9 @@ namespace BaboGame_test_2
 
         bool Slug2Direction = false; //--------------------------------------- Babo prova
         bool Slug2Direction2 = false;
+
+        bool Slug3Direction = false; //--------------------------------------- Limax prova
+        bool Slug3Direction2 = false;
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -192,6 +203,8 @@ namespace BaboGame_test_2
                Exit();
             if (Keyboard.GetState().IsKeyDown(Keys.F11) && (_previousState.IsKeyUp(Keys.F11)))
                 graphics.ToggleFullScreen();
+
+            
 
             // Detectem inputs al teclat
             inputManager.detectKeysPressed();
@@ -239,7 +252,29 @@ namespace BaboGame_test_2
                 Slug2Direction2 = true;
             else if (playerChar2.Position.Y < 0)
                 Slug2Direction2 = false;
-            
+
+            //Actualitzem moviment del llimac de prova ---------------------Limax prova
+            playerChar3.Direction = VectorOps.UnitVector(playerChar.Position - playerChar3.Position);
+
+            if (!Slug3Direction)
+                playerChar3.MoveRight();
+            else
+                playerChar3.MoveLeft();
+            if (Slug3Direction2)
+                playerChar3.MoveUp();
+            else
+                playerChar3.MoveDown();
+
+            if ((playerChar3.Position.X > graphics.PreferredBackBufferWidth))
+                Slug3Direction = true;
+            else if (playerChar3.Position.X < 0)
+                Slug3Direction = false;
+
+            if (playerChar3.Position.Y > graphics.PreferredBackBufferHeight)
+                Slug3Direction2 = true;
+            else if (playerChar3.Position.Y < 0)
+                Slug3Direction2 = false;
+
             // llançem projectils segons els inputs del jugador
             inputManager.DetectMouseClicks();
             projectileManager.Update(gameTime, inputManager.GetMouseWheelValue(), overlaySprites,characterSprites);
@@ -271,7 +306,7 @@ namespace BaboGame_test_2
             {
                 character.Update(gameTime, characterSprites);
                 heartManager.UpdateHealth(character.IDcharacter, character.Health);
-                if ((SlimeTime > 100) && (slimeSprites.Count < 400))
+                if ((SlimeTime > 80) && (slimeSprites.Count < 400))
                 {
                     slimeSprites.Add(
                        new Slime(new Vector2(character.Position.X, character.Position.Y + 20), character.IDcharacter, slimeTexture, 0.15f)
@@ -283,7 +318,7 @@ namespace BaboGame_test_2
                 }
             }
 
-            if ((SlimeTime > 100))
+            if ((SlimeTime > 80))
             {              
                 foreach (var slime in slimeSprites)
                 {

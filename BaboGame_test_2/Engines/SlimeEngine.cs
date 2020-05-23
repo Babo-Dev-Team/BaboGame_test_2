@@ -28,62 +28,78 @@ namespace BaboGame_test_2
 
         public void UpdateSlime(GameTime gameTime, List<Character> characterList, List<Projectile> projectileList, List<ScenarioObjects> scenarioList)
         {
-                foreach (var slime in slimeList)
+            foreach (var slime in slimeList)
+            {
+                //Salinització de les babes
+                foreach (var projectile in projectileList)
                 {
-                    //Salinització de les babes
-                    foreach (var projectile in projectileList)
+                    if ((slime.IsNear(projectile.Position)) && (slime.IsNear(projectile.Target)) && (!slime.IsSalted) && (projectile.ProjectileType == 'N') && (projectile.IsNear(projectile.Position, 5))) //slime.DetectCollision(projectile) 
+                        slime.IsSalted = true;
+                }
+
+                //if (slime.IsSalted)
+                //slime._color = Color.Silver;
+
+                //Destrucció de les babes cada un cert temps
+                if ((slime.timer > 20) && (!slime.IsSalted))
+                    slime.KillSlime();
+                else if (slime.timer > 200)
+                    slime.KillSlime();
+
+                slime.Layer = 0.001f - slime.timer * 0.00001f;
+
+
+                //Conducció de les babes
+                bool sourceConnect = false;
+                foreach (var scenObject in scenarioList)
+                {
+                    if ((scenObject.HasConducitivity) && (slime.DetectCollision(scenObject)) && (slime.IsSalted))
                     {
-                        if (slime.DetectCollision(projectile) && (slime.IsNear(projectile.Target)) && (!slime.IsSalted) && (projectile.ProjectileType == 'N'))
-                            slime.IsSalted = true;
-                    }
-
-                    if (slime.IsSalted)
-                        slime._color = Color.Silver;
-
-                    //Destrucció de les babes cada un cert temps
-                    if ((slime.timer > 20) && (!slime.IsSalted))
-                        slime.KillSlime();
-                    else if (slime.timer > 200)
-                        slime.KillSlime();
-
-                    slime.Layer = 0.001f - slime.timer * 0.00001f; 
-
-                    /*
-                    //Conducció de les babes
-                    bool sourceConnect = false;
-                    foreach(var scenObject in scenarioList)
-                    {
-                        if((scenObject.HasConducitvity)&&(slime.DetectCollision(scenObject)))
+                        if (scenObject.Charge == 'N')
                         {
-                            if(slime.Voltage > scenObject)
-                            {
-                                slime.NegativeCurrent = 0f;
-                                sourceConnect = true;
-                            }
-                            else
-                            {
-                                slime.PositiveCurrent = 0f;
-                                slime.Voltage = scenObject.Voltage;
-                            }
+                            slime.NegativeCurrent = 0;
+                            sourceConnect = true;
+                        }
+                        else if (scenObject.Charge == 'P')
+                        {
+                            slime.PositiveCurrent = 0;
+                            sourceConnect = true;
+                        }
+                        else
+                            sourceConnect = false;
+                    }
+                    else
+                        sourceConnect = false;
+                }
+
+                if ((slime.IsSalted) && ((slime.NegativeCurrent < 8)|| (slime.PositiveCurrent < 8)))
+                { 
+                    foreach (var neighborSlime in slimeList)
+                    {
+                        if ((neighborSlime != slime) && (slime.DetectCollision(neighborSlime)) && (neighborSlime.IsSalted))
+                        {
+
+                            if (neighborSlime.PositiveCurrent > slime.PositiveCurrent)
+                                neighborSlime.PositiveCurrent = slime.PositiveCurrent + 1;
+
+                            if (neighborSlime.NegativeCurrent > slime.NegativeCurrent)
+                                neighborSlime.NegativeCurrent = slime.NegativeCurrent + 1;
                         }
                     }
-                    
-                    foreach(var neighborSlime in slimeList)
-                    {
-                        if((neighborSlime != slime)&&(slime.DetectCollision(neighborSlime)))
-                        {
-                            if(neighborSlime.Voltage > slime.Voltage)
-                                slime.Voltage = neighborSlime.Voltage;
+                }
 
-                            if((neighborSlime.PositiveCurrent < 16)&&(neighborSlime.PositiveCurrent < slime.PositiveCurrent))
-                                slime.PositiveCurrent = neighborSlime.PositiveCurrent +1;
+                if ((slime.PositiveCurrent < 8) && (slime.NegativeCurrent < 8))
+                    slime._color = Color.Violet;
+                else if ((slime.PositiveCurrent < 8))
+                    slime._color = Color.Red;
+                else if ((slime.NegativeCurrent < 8))
+                    slime._color = Color.Blue;
+                else if (slime.IsSalted)
+                    slime._color = Color.Silver;
+                else
+                    slime._color = Color.White;
 
-                            if((neighborSlime.NegativeCurrent < 16)&&(neighborSlime.NegativeCurrent < slime.NegativeCurrent))
-                                slime.NegativeCurrent = neighborSlime.NegativeCurrent +1;
-                        }
-                    }
-                    */
-                }          
+            }          
         }
     }
 
@@ -94,7 +110,7 @@ namespace BaboGame_test_2
         private Vector2 origin;
         public int ShooterID { get; }
         public bool IsSalted;
-        private float radiumSlime = 10f;
+        private float radiumSlime = 200f;
         public int PositiveCurrent = 16;
         public int NegativeCurrent = 16;
 
@@ -108,10 +124,10 @@ namespace BaboGame_test_2
             this._texture = texture;
             this.Position = this.origin;
             this.Scale = scale;
-            this.radiumSlime = texture.Width * scale / 2;
+            this.radiumSlime = texture.Width * scale * 1f;
             this.Layer = 0f;
             this.SolidObject = false;
-            this.HitBoxScale = 0.8f;
+            this.HitBoxScale = 1f;
             //IsSaltShoot = true;
         }
 

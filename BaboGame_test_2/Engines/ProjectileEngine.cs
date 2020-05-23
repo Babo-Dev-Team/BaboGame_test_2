@@ -270,6 +270,14 @@ namespace BaboGame_test_2
             //IsSaltShoot = true;
         }
 
+        public bool IsNear(Vector2 position, float threshold)
+        {
+            if (VectorOps.ModuloVector(new Vector2(this.Position.X - position.X, this.Position.Y - position.Y)) < threshold)
+                return true;
+            else
+                return false;
+        }
+
         // Movem el projectil de forma determinada per la direcció i velocitat linial
         public void Move()
         {
