@@ -19,7 +19,7 @@ namespace BaboGame_test_2
         private SpriteFont _font;
         Debugger debugger;
 
-
+        Texture2D backgroundImage;
 
 
         private List<Character> characterSprites;           // Personatges (inclòs el jugador)
@@ -98,6 +98,7 @@ namespace BaboGame_test_2
             var slugTexture = Content.Load<Texture2D>("Babo/Babo down0 s0");
             var sightTexture = Content.Load<Texture2D>("Sight/Sight_off");
             var scenarioTexture = Content.Load<Texture2D>("Scenario/Block");
+            //scenarioTexture = Content.Load<Texture2D>("Scenario/Beer");
 
             var projectileMenuTexture = Content.Load<Texture2D>("Slug_status/SaltMenu");
             projectileTexture = new Dictionary<string, Texture2D>()
@@ -387,6 +388,11 @@ namespace BaboGame_test_2
             // TODO: Add your drawing code here
             spriteBatch.Begin(SpriteSortMode.FrontToBack, null, SamplerState.LinearWrap);
             //spriteBatch.Begin(SpriteSortMode.FrontToBack);
+
+            //Fons
+            backgroundImage = Content.Load<Texture2D>("Scenario/Scenario1");
+            float backGroundScale = Math.Max(((float)graphics.PreferredBackBufferWidth/(float)backgroundImage.Width),((float)graphics.PreferredBackBufferHeight/(float)backgroundImage.Height));
+            spriteBatch.Draw(backgroundImage, new Vector2(0, 0), null, Color.White, 0f, new Vector2(0,0), backGroundScale, SpriteEffects.None, 0f);
 
             debugger.DrawText(spriteBatch);
 
